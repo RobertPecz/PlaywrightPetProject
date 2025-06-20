@@ -1,0 +1,29 @@
+import { Page } from '@playwright/test';
+
+
+class MainPage {
+
+    readonly page: Page;
+
+    constructor(page: Page) {
+        this.page = page;
+        
+    }
+
+    elements = {
+        loginButton : () => this.page.getByRole('link', { name: 'Log in' }),
+        emailTextBox : () => this.page.getByTestId('Email'),
+        passwordTextBox : () => this.page.getByTestId('Password'),
+        signInButton : () => this.page.locator('//input[@value="Log in"]'),
+        loggedInUserLink : (loggedInName: string) => this.page.getByRole('link', {name: loggedInName})
+    }
+
+    async userLogIn(email: string, password: string) {
+        await this.elements.loginButton().click();
+        this.elements.emailTextBox().fill(email);
+        this.elements.passwordTextBox().fill(password);
+        await this.elements.signInButton().click();
+    }
+}
+
+export default MainPage;
