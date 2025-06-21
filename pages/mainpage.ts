@@ -20,8 +20,8 @@ class MainPage {
 
     async userLogIn(email: string, password: string) {
         await this.elements.loginButton().click();
-        this.elements.emailTextBox().fill(email);
-        this.elements.passwordTextBox().fill(password);
+        await this.elements.emailTextBox().fill(email);
+        await this.elements.passwordTextBox().fill(password);
         await this.elements.signInButton().click();
     }
 }
