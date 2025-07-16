@@ -1,0 +1,4 @@
+{
+    "loginUnsuccesfulErrorMessage": "Login was unsuccessful. Please correct the errors and try again.",
+    "credentialsIncorrectErrorMessage": "The credentials provided are incorrect"
+}

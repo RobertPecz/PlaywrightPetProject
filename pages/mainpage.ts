@@ -15,7 +15,10 @@ class MainPage {
         emailTextBox : () => this.page.getByTestId('Email'),
         passwordTextBox : () => this.page.getByTestId('Password'),
         signInButton : () => this.page.locator('//input[@value="Log in"]'),
-        loggedInUserLink : (loggedInName: string) => this.page.getByRole('link', {name: loggedInName})
+        loggedInUserLink : (loggedInName: string) => this.page.getByRole('link', {name: loggedInName}),
+        loginUnsuccesfulErrorLabel : () => this.page.locator("//div[@class='validation-summary-errors']/span"),
+        credentialErrorLabel : () => this.page.locator("//div[@class='validation-summary-errors']/ul/li")
+
     }
 
     async userLogIn(email: string, password: string) {
