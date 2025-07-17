@@ -21,10 +21,17 @@ test('user log in successful', async ({ page }) => {
   await expect(mainPage.elements.loggedInUserLink(mainpageData.email)).toBeVisible();
 });
 
-test('user log in invalid password', async({page}) => {
+test('user log in invalid password', async({ page }) => {
   const mainPage = new MainPage(page);
 
   await mainPage.userLogIn(mainpageData.email, mainpageData.invalidPassword);
   await expect(mainPage.elements.loginUnsuccesfulErrorLabel()).toHaveText(errorMessage.loginUnsuccesfulErrorMessage);
   await expect(mainPage.elements.credentialErrorLabel()).toHaveText(errorMessage.credentialsIncorrectErrorMessage);
-})
+});
+
+test('user log in invalid email', async({ page }) => {
+  const mainPage = new MainPage(page);
+
+  await mainPage.userInvalidEmailInput(mainpageData.invalidEmail);
+  await expect(mainPage.elements.enterValidEmailErrorLabel()).toHaveText(errorMessage.invalidEmailErrorMessage);
+});
