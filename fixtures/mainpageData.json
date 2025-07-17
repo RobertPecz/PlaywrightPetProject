@@ -1,5 +1,6 @@
 {
     "email":"rob.pecz@gmail.com",
     "password":"123456",
-    "invalidPassword": "654321"
+    "invalidPassword": "654321",
+    "invalidEmail": "invalidEmail"
 }
