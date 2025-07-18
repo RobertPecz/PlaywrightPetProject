@@ -9,29 +9,44 @@ test.beforeEach(async ({ page }) => {
 });
 
 test('has title', async ({ page }) => {
-
-  // Expect a title "to contain" a substring.
-  await expect(page).toHaveTitle('Demo Web Shop');
+  await test.step('Validate that page title is what expected', async() => {
+    await expect(page).toHaveTitle('Demo Web Shop');
+  });
 });
 
 test('user log in successful', async ({ page }) => {
   const mainPage = new MainPage(page);
 
-  await mainPage.userLogIn(mainpageData.email, mainpageData.password);
-  await expect(mainPage.elements.loggedInUserLink(mainpageData.email)).toBeVisible();
+  await test.step('User log in', async() =>{
+    await mainPage.userLogIn(mainpageData.email, mainpageData.password);
+  });
+
+  await test.step('Validate user is logged in', async() =>{
+    await expect(mainPage.elements.loggedInUserLink(mainpageData.email)).toBeVisible();
+  });
 });
 
 test('user log in invalid password', async({ page }) => {
   const mainPage = new MainPage(page);
 
-  await mainPage.userLogIn(mainpageData.email, mainpageData.invalidPassword);
-  await expect(mainPage.elements.loginUnsuccesfulErrorLabel()).toHaveText(errorMessage.loginUnsuccesfulErrorMessage);
-  await expect(mainPage.elements.credentialErrorLabel()).toHaveText(errorMessage.credentialsIncorrectErrorMessage);
+  await test.step('User log in', async() =>{
+    await mainPage.userLogIn(mainpageData.email, mainpageData.invalidPassword);
+  });
+
+  await test.step('Validate that correct error messages appear', async() => {
+    await expect(mainPage.elements.loginUnsuccesfulErrorLabel()).toHaveText(errorMessage.loginUnsuccesfulErrorMessage);
+    await expect(mainPage.elements.credentialErrorLabel()).toHaveText(errorMessage.credentialsIncorrectErrorMessage);
+  });
 });
 
 test('user log in invalid email', async({ page }) => {
   const mainPage = new MainPage(page);
 
-  await mainPage.userInvalidEmailInput(mainpageData.invalidEmail);
-  await expect(mainPage.elements.enterValidEmailErrorLabel()).toHaveText(errorMessage.invalidEmailErrorMessage);
+  await test.step('User log in with invalid email', async() => {
+    await mainPage.userInvalidEmailInput(mainpageData.invalidEmail);
+  });
+
+  await test.step('Validate that correct error messages appear', async() =>{
+    await expect(mainPage.elements.enterValidEmailErrorLabel()).toHaveText(errorMessage.invalidEmailErrorMessage);
+  });
 });
