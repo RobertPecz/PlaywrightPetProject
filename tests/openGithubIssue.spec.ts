@@ -23,15 +23,15 @@ test('list issues', async({request}) => {
 test('create issues', async({request}) => {
     const readPatFromFile = new FileReaderHelper();
     const pat = readPatFromFile.readPat('pat.txt');
-
+    console.log(readPatFromFile.readTestCasesExcelFile('Buy product', 'C11'));
     const stringOperations = new StringOperations();
     
-    const response = await request.post(githubApiData.endpoint, {
+    /*const response = await request.post(githubApiData.endpoint, {
         headers: {
             'X-GitHub-Api-Version': '2022-11-28', 
             'content-type': 'application/vnd.github.raw+json', 
             'Authorization': `${pat}`
         }
 
-    })
+    })*/
 })
