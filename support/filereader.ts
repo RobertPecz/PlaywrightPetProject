@@ -5,6 +5,10 @@ class FileReaderHelper {
         
         return fs.readFileSync(patFilePath, 'utf-8');
     }
+
+    readTestCasesExcelFile(sheetName: string) {
+        
+    }
 }
 
 export default FileReaderHelper;
