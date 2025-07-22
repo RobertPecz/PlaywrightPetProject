@@ -5,7 +5,7 @@ class StringOperations {
     }
 
     createTestCaseBody(body: string, expectedResult: string): string {
-        return 'Write testcase' + body + '\n\nExpected result:' + expectedResult 
+        return 'Write testcase' + body.toLocaleLowerCase() + '\n\nExpected result:' + expectedResult;
     }
 }
 

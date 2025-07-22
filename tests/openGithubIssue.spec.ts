@@ -12,7 +12,7 @@ test('list issues', async({request}) => {
         headers:{ 
             'X-GitHub-Api-Version': '2022-11-28', 
             'content-type': 'application/vnd.github.raw+json', 
-            'Authorization': `${pat}`
+            'Authorization': `token ${pat}`
         }
     });
     
@@ -22,16 +22,24 @@ test('list issues', async({request}) => {
 
 test('create issues', async({request}) => {
     const readPatFromFile = new FileReaderHelper();
-    const pat = readPatFromFile.readPat('pat.txt');
-    console.log(readPatFromFile.readTestCasesExcelFile('Buy product', 'C11'));
     const stringOperations = new StringOperations();
-    
-    /*const response = await request.post(githubApiData.endpoint, {
+    const pat = readPatFromFile.readPat('patFine.txt');
+    const title = readPatFromFile.readTestCasesExcelFile('Buy product', 'C12');
+    const body = readPatFromFile.readTestCasesExcelFile('Buy product', 'E12');
+
+    const response = await request.post(githubApiData.endpoint, {
         headers: {
             'X-GitHub-Api-Version': '2022-11-28', 
             'content-type': 'application/vnd.github.raw+json', 
-            'Authorization': `${pat}`
+            'Authorization': `token ${pat}`
+        },
+        data: {
+            title: stringOperations.createTestcaseTitle(title),
+            body: stringOperations.createTestCaseBody(title, body),
+            assignees: ['RobertPecz'],
+            labels: ['enhancement']
         }
 
-    })*/
+    })
+    console.log(response.status());
 })

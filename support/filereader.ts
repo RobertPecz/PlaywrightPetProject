@@ -9,10 +9,6 @@ class FileReaderHelper {
     }
 
     readTestCasesExcelFile(sheetName: string, cellNumber: string) {
-        
-        //Change sheet to parameterized
-        //Change cell to parameterized 
-        //Returning data
         try {
             const filePath = path.resolve(__dirname, '../testcases/automation_practice_testcases.xlsx');
             const obj = XLSX.readFile(filePath);
