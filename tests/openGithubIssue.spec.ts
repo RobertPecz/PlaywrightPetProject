@@ -3,10 +3,12 @@ import githubApiData from '../fixtures/githubAPIData.json'
 import FileReaderHelper from '../support/filereader';
 import StringOperations from '../support/stringOperations';
 
+const PatName = 'pat.txt'
+
 test('list issues', async({request}) => {
 
     const readPatFromFile = new FileReaderHelper();
-    const pat = readPatFromFile.readPat('pat.txt');
+    const pat = readPatFromFile.readPat(PatName);
 
     const issues = await request.get(githubApiData.endpoint, {
         headers:{ 
@@ -23,23 +25,33 @@ test('list issues', async({request}) => {
 test('create issues', async({request}) => {
     const readPatFromFile = new FileReaderHelper();
     const stringOperations = new StringOperations();
-    const pat = readPatFromFile.readPat('patFine.txt');
-    const title = readPatFromFile.readTestCasesExcelFile('Buy product', 'C12');
-    const body = readPatFromFile.readTestCasesExcelFile('Buy product', 'E12');
+    const pat = readPatFromFile.readPat(PatName);
+    const sheetName = 'Other'
+    let line = 11;
+    let title = readPatFromFile.readTestCasesExcelFile(sheetName, 'C', line.toString());
+    let body = readPatFromFile.readTestCasesExcelFile(sheetName, 'E', line.toString());
 
-    const response = await request.post(githubApiData.endpoint, {
-        headers: {
-            'X-GitHub-Api-Version': '2022-11-28', 
-            'content-type': 'application/vnd.github.raw+json', 
-            'Authorization': `token ${pat}`
-        },
-        data: {
-            title: stringOperations.createTestcaseTitle(title),
-            body: stringOperations.createTestCaseBody(title, body),
-            assignees: ['RobertPecz'],
-            labels: ['enhancement']
-        }
+    while(title !== undefined && body !== undefined) {
+        const response = await request.post(githubApiData.endpoint, {
+            headers: {
+                'X-GitHub-Api-Version': '2022-11-28', 
+                'content-type': 'application/vnd.github.raw+json', 
+                'Authorization': `token ${pat}`
+            },
+            data: {
+                title: stringOperations.createTestcaseTitle(title),
+                body: stringOperations.createTestCaseBody(title, body),
+                assignees: ['RobertPecz'],
+                labels: ['enhancement']
+            }
 
-    })
-    console.log(response.status());
+        })
+
+        console.log(response.status());
+        line++;
+
+        title = readPatFromFile.readTestCasesExcelFile(sheetName, 'C', line.toString());
+        body = readPatFromFile.readTestCasesExcelFile(sheetName, 'E', line.toString());
+    }
+    console.log('End run');
 })
