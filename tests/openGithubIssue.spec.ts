@@ -18,8 +18,11 @@ test('list issues', async({request}) => {
         }
     });
     
-    const response = JSON.parse(await issues.text());
-    console.log(response);
+    const response: Array<string> = JSON.parse(await issues.text());
+    console.log(response[0]);
+    await expect(issues.status()).toBe(200);
+    await expect(response[0]['url']).toEqual(expect.stringContaining('https://api.github.com/repos/RobertPecz/PlaywrightPetProject'));
+    await expect(response[0]['body']).toBeTruthy();
 });
 
 test('create issues', async({request}) => {
