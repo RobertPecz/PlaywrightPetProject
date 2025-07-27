@@ -8,7 +8,7 @@ class FileReaderHelper {
         return fs.readFileSync(patFilePath, 'utf-8');
     }
 
-    readTestCasesExcelFile(sheetName: string, cellLetter: string, cellNumber: string) {
+    readTestCaseExcelFile(sheetName: string, cellLetter: string, cellNumber: string) {
         try {
             const filePath: string = path.resolve(__dirname, '../testcases/automation_practice_testcases.xlsx');
             const workbook: XLSX.WorkBook = XLSX.readFile(filePath);
@@ -24,6 +24,21 @@ class FileReaderHelper {
         catch (error) {
             throw Error(error)
         }
+    }
+
+    readMultipleTestCases(sheetName: string, cellLetter: string): Array<string> {
+        try {
+            const filePath: string = path.resolve(__dirname, '../testcases/automation_practice_testcases.xlsx');
+            const workbook: XLSX.WorkBook = XLSX.readFile(filePath);
+            const sheet: XLSX.WorkSheet = workbook.Sheets[sheetName];
+
+            var result = Object.keys(sheet).filter(v => v.startsWith(cellLetter)).map(e => sheet[e]);
+
+            return result.map(item => item.h);
+        } 
+        catch (error) {
+            throw Error(error)
+        } 
     }
 }
 
