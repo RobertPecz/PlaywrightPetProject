@@ -40,6 +40,14 @@ class FileReaderHelper {
             throw Error(error)
         } 
     }
+
+    compareIsTitleAlreadyOpenedOnGithub(response: Array<string>, titles: Array<string>): Array<string> {
+        const sanitizedArray = response.map(element => element['title'].substring(10));
+        const a = sanitizedArray.filter(item => !titles.includes(item));
+        const b = titles.filter(item => !sanitizedArray.includes(item))
+        
+        return b;
+    }
 }
 
 export default FileReaderHelper;

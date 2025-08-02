@@ -2,6 +2,7 @@ import { test, expect, APIResponse } from '@playwright/test';
 import githubApiData from '../fixtures/githubAPIData.json'
 import FileReaderHelper from '../support/filereader';
 import StringOperations from '../support/stringOperations';
+import HeaderHelper from '../support/headerhelper';
 
 const PatName = 'pat.txt'
 
@@ -28,9 +29,9 @@ test('list issues', async({request}) => {
 });
 
 [
-    { name: 'Login and register' },
-    { name: 'Buy product' },
-    { name: 'Other' }
+    { name: 'Login and register' }
+    /*{ name: 'Buy product' },
+    { name: 'Other' }*/
 ].forEach(({name}) => {
     test(`create issues from ${name} sheet`, async({request}) => {
         const readPatFromFile: FileReaderHelper = new FileReaderHelper();
@@ -50,7 +51,28 @@ test('list issues', async({request}) => {
             }
         });
     
+        const headerHelper = new HeaderHelper();
+        headerHelper.getHeaderPagination(issues);
+
         const response: Array<string> = JSON.parse(await issues.text()); // <-- Compare titles and bodies is in the array. If yes, don't go into the loop.
+
+        const difference: Array<string> = readPatFromFile.compareIsTitleAlreadyOpenedOnGithub(response, titles);
+
+        /*for (let index = 0; index < difference.length; index++) {
+            const response = await request.post(githubApiData.endpoint, {
+                headers: {
+                    'X-GitHub-Api-Version': '2022-11-28', 
+                    'content-type': 'application/vnd.github.raw+json', 
+                    'Authorization': `token ${pat}`
+                },
+                data: {
+                    title: stringOperations.createTestcaseTitle(title),
+                    body: stringOperations.createTestCaseBody(title, body),
+                    assignees: ['RobertPecz'],
+                    labels: ['enhancement']
+                }
+            })
+        }
 
         while(title !== undefined && body !== undefined) {
             const response = await request.post(githubApiData.endpoint, {
@@ -79,7 +101,7 @@ test('list issues', async({request}) => {
 
             title = readPatFromFile.readTestCaseExcelFile(`${name}`, 'C', line.toString());
             body = readPatFromFile.readTestCaseExcelFile(`${name}`, 'E', line.toString());
-        }
+        }*/
         console.log('End run');
     });
 });
