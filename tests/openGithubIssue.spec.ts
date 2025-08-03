@@ -2,7 +2,9 @@ import { test, expect, APIResponse } from '@playwright/test';
 import githubApiData from '../fixtures/githubAPIData.json'
 import FileReaderHelper from '../support/filereader';
 import StringOperations from '../support/stringOperations';
-import HeaderHelper from '../support/headerhelper';
+import HeaderHelper from '../support/apiHandler';
+import TestcasesFilter from '../support/testcasesFilter';
+import ApiHandler from '../support/apiHandler';
 
 const PatName = 'pat.txt'
 
@@ -35,28 +37,44 @@ test('list issues', async({request}) => {
 ].forEach(({name}) => {
     test(`create issues from ${name} sheet`, async({request}) => {
         const readPatFromFile: FileReaderHelper = new FileReaderHelper();
-        const stringOperations: StringOperations = new StringOperations();
+        const apiHandler: ApiHandler = new ApiHandler();
+        const testcasesFilter: TestcasesFilter = new TestcasesFilter();
         const pat: string = readPatFromFile.readPat(PatName);
+        const issues: APIResponse[] = [];
+        let response: string[] = [];
+
         let line: number = 11;
+        let endpointCollection: string[] = [githubApiData.endpoint]
         let titles: Array<string> = readPatFromFile.readMultipleTestCases(`${name}`, 'C');
         let bodies: Array<string> = readPatFromFile.readMultipleTestCases(`${name}`, 'E');
         let title: string | never = readPatFromFile.readTestCaseExcelFile(`${name}`, 'C', line.toString());
         let body: string | never = readPatFromFile.readTestCaseExcelFile(`${name}`, 'E', line.toString());
 
-        const issues: APIResponse = await request.get(githubApiData.endpoint, {
-            headers: { 
-                'X-GitHub-Api-Version': '2022-11-28', 
-                'content-type': 'application/vnd.github.raw+json', 
-                'Authorization': `token ${pat}`
+        for (let index = 0; index < endpointCollection.length; index++) {
+            issues.push(await request.get(endpointCollection[index], {
+                headers: { 
+                    'X-GitHub-Api-Version': '2022-11-28', 
+                    'content-type': 'application/vnd.github.raw+json', 
+                    'Authorization': `token ${pat}`
+                }
+                
+            }));
+
+            let nextEndpoint: string | undefined = apiHandler.getHeaderPagination(issues[index]);
+            if(typeof nextEndpoint === "string") {
+                endpointCollection.push(nextEndpoint);
             }
-        });
-    
-        const headerHelper = new HeaderHelper();
-        headerHelper.getHeaderPagination(issues);
+        }         
 
-        const response: Array<string> = JSON.parse(await issues.text()); // <-- Compare titles and bodies is in the array. If yes, don't go into the loop.
+        for (let index = 0; index < issues.length; index++) {
+            response.push(JSON.parse((await issues[index].text())));
+            
+        }
 
-        const difference: Array<string> = readPatFromFile.compareIsTitleAlreadyOpenedOnGithub(response, titles);
+        response = response.flat();
+        testcasesFilter.compareIsTitleAlreadyOpenedOnGithub(response, titles);
+        //const response: Array<string> = JSON.parse(await issues[1].text()); // <-- Compare titles and bodies is in the array. If yes, don't go into the loop.
+
 
         /*for (let index = 0; index < difference.length; index++) {
             const response = await request.post(githubApiData.endpoint, {
