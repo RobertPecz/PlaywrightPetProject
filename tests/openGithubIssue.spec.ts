@@ -66,13 +66,12 @@ test('list issues', async({request}) => {
             }
         }         
 
-        for (let index = 0; index < issues.length; index++) {
-            response.push(JSON.parse((await issues[index].text())));
-            
-        }
+        response = (await Promise.all(issues.map(issue => issue.text().then(JSON.parse)))).flat();
+        let a = testcasesFilter.compareIsTitleAlreadyOpenedOnGithub(response, titles);
 
-        response = response.flat();
-        testcasesFilter.compareIsTitleAlreadyOpenedOnGithub(response, titles);
+        //closed issues not fetched! https://api.github.com/repos/chartjs/chartjs-plugin-datalabels/issues?state=all
+        //delete wrongly opened issues.
+
         //const response: Array<string> = JSON.parse(await issues[1].text()); // <-- Compare titles and bodies is in the array. If yes, don't go into the loop.
 
 
