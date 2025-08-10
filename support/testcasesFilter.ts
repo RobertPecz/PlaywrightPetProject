@@ -1,17 +1,15 @@
 class TestcasesFilter {
-    compareIsTitleAlreadyOpenedOnGithub(response: string[], titles: string[]): string[] {
-        let sanitizedArray: string[] = [];
-        for (let index = 0; index < response.length; index++) {
-            if(response[index]['labels'].length !== 0){
-                sanitizedArray.push(response[index]['title']);          
-            }
-        }
-            //const sanitizedArray = response.map(element => element['title'].substring(10));
-            //const a = sanitizedArray.filter(item => !titles.includes(item));
-            const testcasesNotOnGithub = titles.filter(item => !sanitizedArray.includes(item))
+    compareIsTitleAlreadyOpenedOnGithub(response: string[], excelData: object[]): string[] {
+        //Rework this to accept object[]
+        const sanitizedArray = response
+            .filter(item => Array.isArray(item['labels']) && item['labels'].length > 0)
+            .map(item => item['title']);
+
+        const testcasesNotOnGithub = titles.filter(
+            title => !sanitizedArray.some(s => s.replace(/^Testcase:\s*/, "") === title));
             
-            return testcasesNotOnGithub;
-        }
+        return testcasesNotOnGithub;
+    }
 }
 
 export default TestcasesFilter;

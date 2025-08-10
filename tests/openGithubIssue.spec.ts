@@ -31,9 +31,9 @@ test('list issues', async({request}) => {
 });
 
 [
-    { name: 'Login and register' }
-    /*{ name: 'Buy product' },
-    { name: 'Other' }*/
+    { name: 'Login and register' },
+    { name: 'Buy product' },
+    { name: 'Other' }
 ].forEach(({name}) => {
     test(`create issues from ${name} sheet`, async({request}) => {
         const readPatFromFile: FileReaderHelper = new FileReaderHelper();
@@ -45,8 +45,8 @@ test('list issues', async({request}) => {
 
         let line: number = 11;
         let endpointCollection: string[] = [githubApiData.endpoint]
-        let titles: Array<string> = readPatFromFile.readMultipleTestCases(`${name}`, 'C');
-        let bodies: Array<string> = readPatFromFile.readMultipleTestCases(`${name}`, 'E');
+        let excelData: object[] = readPatFromFile.readMultipleTestCases(`${name}`, 'C', 'E');
+
         let title: string | never = readPatFromFile.readTestCaseExcelFile(`${name}`, 'C', line.toString());
         let body: string | never = readPatFromFile.readTestCaseExcelFile(`${name}`, 'E', line.toString());
 
@@ -67,31 +67,14 @@ test('list issues', async({request}) => {
         }         
 
         response = (await Promise.all(issues.map(issue => issue.text().then(JSON.parse)))).flat();
-        let a = testcasesFilter.compareIsTitleAlreadyOpenedOnGithub(response, titles);
+        let issuesNotOnGithub = testcasesFilter.compareIsTitleAlreadyOpenedOnGithub(response, excelData);
 
-        //closed issues not fetched! https://api.github.com/repos/chartjs/chartjs-plugin-datalabels/issues?state=all
-        //delete wrongly opened issues.
-
-        //const response: Array<string> = JSON.parse(await issues[1].text()); // <-- Compare titles and bodies is in the array. If yes, don't go into the loop.
-
-
-        /*for (let index = 0; index < difference.length; index++) {
-            const response = await request.post(githubApiData.endpoint, {
-                headers: {
-                    'X-GitHub-Api-Version': '2022-11-28', 
-                    'content-type': 'application/vnd.github.raw+json', 
-                    'Authorization': `token ${pat}`
-                },
-                data: {
-                    title: stringOperations.createTestcaseTitle(title),
-                    body: stringOperations.createTestCaseBody(title, body),
-                    assignees: ['RobertPecz'],
-                    labels: ['enhancement']
-                }
-            })
+        for (let index = 0; index < issuesNotOnGithub.length; index++) {
+            
+            
         }
 
-        while(title !== undefined && body !== undefined) {
+        /*while(title !== undefined && body !== undefined) {
             const response = await request.post(githubApiData.endpoint, {
                 headers: {
                     'X-GitHub-Api-Version': '2022-11-28', 
@@ -119,6 +102,7 @@ test('list issues', async({request}) => {
             title = readPatFromFile.readTestCaseExcelFile(`${name}`, 'C', line.toString());
             body = readPatFromFile.readTestCaseExcelFile(`${name}`, 'E', line.toString());
         }*/
+
         console.log('End run');
     });
 });
