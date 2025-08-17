@@ -1,0 +1,6 @@
+{
+    "baseEndpoint": "https://api.github.com/repos/RobertPecz/PlaywrightPetProject",
+    "endpoint": "/issues?state=all",
+    "assignee": "RobertPecz",
+    "labels": [ "enhancement", "bug" ]
+}
