@@ -2,7 +2,6 @@ import { test, expect, APIResponse } from '@playwright/test';
 import githubApiData from '../fixtures/githubAPIData.json'
 import FileReaderHelper from '../support/filereader';
 import StringOperations from '../support/stringOperations';
-import HeaderHelper from '../support/apiHandler';
 import TestcasesFilter from '../support/testcasesFilter';
 import ApiHandler from '../support/apiHandler';
 
