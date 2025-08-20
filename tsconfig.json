@@ -1,0 +1,8 @@
+{
+    "compilerOptions": {
+            "esModuleInterop": true,
+            "resolveJsonModule": true,
+            "noEmit": true, // Don't output any javascript
+            "strictNullChecks": true
+    }
+}

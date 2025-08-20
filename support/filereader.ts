@@ -12,8 +12,12 @@ class FileReaderHelper {
      * @returns The string from the pat file.
      */
     readPat(patFilePath: string): string {
+        let token = process.env.PAT;
         
-        return fs.readFileSync(patFilePath, 'utf-8');
+        if(!token) {
+            return fs.readFileSync(patFilePath, 'utf-8');
+        }
+        return token;
     }
 
     /**
