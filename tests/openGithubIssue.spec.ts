@@ -12,7 +12,7 @@ test('list issues', async({request}) => {
     const readPatFromFile: FileReaderHelper = new FileReaderHelper();
     const pat: string = readPatFromFile.readPat(PatName);
 
-    const issues: APIResponse = await request.get(githubApiData.endpoint, {
+    const issues: APIResponse = await request.get(githubApiData.baseEndpoint + githubApiData.endpoint, {
         headers:{ 
             'X-GitHub-Api-Version': '2022-11-28', 
             'content-type': 'application/vnd.github.raw+json', 
@@ -42,7 +42,7 @@ test('list issues', async({request}) => {
         const pat: string = readPatFromFile.readPat(PatName);
         const issues: APIResponse[] = [];
         let response: string[] = [];
-        let endpointCollection: string[] = [githubApiData.baseEndpoint+githubApiData.endpoint]
+        let endpointCollection: string[] = [githubApiData.baseEndpoint + githubApiData.endpoint]
         let excelData: object[] = readPatFromFile.readMultipleTestCases(`${name}`, 'C', 'E');
 
         //Getting all of the open issues from Github.
@@ -69,7 +69,7 @@ test('list issues', async({request}) => {
         
         //Loop through the whole @issuesNotOnGithub and POST it to Github to the PlaywrightPetProject project.
         for (let index = 0; index < issuesNotOnGithub.length; index++) {
-            const responsePostGithub = await request.post(githubApiData.baseEndpoint+githubApiData.endpoint, {
+            const responsePostGithub = await request.post(githubApiData.baseEndpoint + githubApiData.endpoint, {
                 headers: {
                     'X-GitHub-Api-Version': '2022-11-28', 
                     'content-type': 'application/vnd.github.raw+json', 
