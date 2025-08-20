@@ -1,5 +1,8 @@
 {
     "baseEndpoint": "https://api.github.com/repos/RobertPecz/PlaywrightPetProject",
+    "apiversion": "2022-11-28",
+    "contentType": "application/vnd.github.raw+json",
+    "authorization": "token",
     "endpoint": "/issues?state=all",
     "assignee": "RobertPecz",
     "labels": [ "enhancement", "bug" ]
