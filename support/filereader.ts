@@ -15,7 +15,8 @@ class FileReaderHelper {
         let token = process.env.PAT;
         
         if(!token) {
-            return fs.readFileSync(patFilePath, 'utf-8');
+            let patFromFile: string = fs.readFileSync(patFilePath, 'utf-8');
+            return patFromFile.substring(0, patFromFile.length - 1);
         }
         return token;
     }

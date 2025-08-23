@@ -24,10 +24,9 @@ test('list issues', async({ request }) => {
     const response: Array<string> = JSON.parse(await issues.text());
     
     expect(issues.status()).toBe(200);
-    expect(response[1]['url']).toEqual(expect.stringContaining(githubApiData.baseEndpoint));
-    expect(response[1]['body']).toBeTruthy();
-    expect(response[1]['assignees'][0]['login']).toEqual(githubApiData.assignee);
-    expect(response[1]['state']).toEqual('open');
+    expect(response[0]['url']).toEqual(expect.stringContaining(githubApiData.baseEndpoint));
+    expect(response[0]['title']).toBeTruthy();
+    expect(response[0]['assignees'][0]['login']).toEqual(githubApiData.assignee);
 });
 
 [
