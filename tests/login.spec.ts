@@ -5,7 +5,7 @@ import errorMessage from '../fixtures/errorMessages.json'
 
 test.beforeEach(async ({ page }) => {
   console.log(`Running ${test.info().title}`);
-  await page.goto('https://demowebshop.tricentis.com/');
+  await page.goto('/');
 });
 
 test('has title', async ({ page }) => {
@@ -48,5 +48,18 @@ test('user log in invalid email', async({ page }) => {
 
   await test.step('Validate that correct error messages appear', async() => {
     await expect(mainPage.elements.enterValidEmailErrorLabel()).toHaveText(errorMessage.invalidEmailErrorMessage);
+  });
+});
+
+test('user log in empty password', async({ page }) => {
+  const mainPage = new MainPage(page);
+
+  await test.step('User log in', async() => {
+    await mainPage.userLogIn(mainpageData.email, '');
+  });
+
+  await test.step('Validate that correct error messages appear', async() => {
+    await expect(mainPage.elements.loginUnsuccesfulErrorLabel()).toHaveText(errorMessage.loginUnsuccesfulErrorMessage);
+    await expect(mainPage.elements.credentialErrorLabel()).toHaveText(errorMessage.credentialsIncorrectErrorMessage);
   });
 });
