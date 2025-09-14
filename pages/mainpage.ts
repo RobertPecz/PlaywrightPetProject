@@ -1,4 +1,6 @@
 import { Page } from '@playwright/test';
+import RegisterPage from './registerpage';
+
 
 
 class MainPage {
@@ -18,7 +20,8 @@ class MainPage {
         loggedInUserLink : (loggedInName: string) => this.page.getByRole('link', {name: loggedInName}),
         loginUnsuccesfulErrorLabel : () => this.page.locator("//div[@class='validation-summary-errors']/span"),
         credentialErrorLabel : () => this.page.locator("//div[@class='validation-summary-errors']/ul/li"),
-        enterValidEmailErrorLabel : () => this.page.locator("//span[@class='field-validation-error']/span[@for='Email']")
+        enterValidEmailErrorLabel : () => this.page.locator("//span[@class='field-validation-error']/span[@for='Email']"),
+        registerButton : () => this.page.locator("//a[text()='Register']")
     }
 
     async userLogIn(email: string, password: string) {
@@ -33,6 +36,11 @@ class MainPage {
         await this.elements.loginButton().click();
         await this.elements.emailTextBox().fill(email);
         await this.elements.emailTextBox().press('Enter');
+    }
+
+    async navigateToRegisterPage(): Promise<RegisterPage> {
+        await this.elements.registerButton().click();
+        return new RegisterPage(this.page);
     }
 }
 

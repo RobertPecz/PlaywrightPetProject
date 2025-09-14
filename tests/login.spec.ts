@@ -8,13 +8,13 @@ test.beforeEach(async ({ page }) => {
   await page.goto('/');
 });
 
-test('has title', async ({ page }) => {
+test('Has title', async ({ page }) => {
   await test.step('Validate that page title is what expected', async() => {
     await expect(page).toHaveTitle('Demo Web Shop');
   });
 });
 
-test('user log in successful', async ({ page }) => {
+test('User log in successful', async ({ page }) => {
   const mainPage = new MainPage(page);
 
   await test.step('User log in', async() =>{
@@ -26,7 +26,7 @@ test('user log in successful', async ({ page }) => {
   });
 });
 
-test('user log in invalid password', async({ page }) => {
+test('User log in invalid password', async({ page }) => {
   const mainPage = new MainPage(page);
 
   await test.step('User log in', async() =>{
@@ -39,7 +39,7 @@ test('user log in invalid password', async({ page }) => {
   });
 });
 
-test('user log in invalid email', async({ page }) => {
+test('User log in invalid email', async({ page }) => {
   const mainPage = new MainPage(page);
 
   await test.step('User log in with invalid email', async() => {
@@ -51,7 +51,7 @@ test('user log in invalid email', async({ page }) => {
   });
 });
 
-test('user log in empty password', async({ page }) => {
+test('User log in empty password', async({ page }) => {
   const mainPage = new MainPage(page);
 
   await test.step('User log in', async() => {
