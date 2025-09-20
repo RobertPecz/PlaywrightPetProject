@@ -17,28 +17,29 @@ class RegisterPage {
         passwordTextbox : () => this.page.getByTestId('Password'),
         confirmPasswordTextbox : () => this.page.getByTestId('ConfirmPassword'),
         registerButton : () => this.page.getByTestId('register-button'),
-        registrationCompleteText : (resultText : string) => this.page.locator(`//div[contains(text(), ${resultText})]`),
+        registrationCompleteText : (resultText : string) => this.page.locator(`//div[contains(text(), "${resultText}")]`),
         continueButton : () => this.page.locator("//input[@value='Continue']")
     }
 
-    populateRegisterData(data: object) {
-        if(data['gender'].toLowerCase() === 'male') {
-            this.elements.genderMaleRadioButton().click();
+    async populateRegisterData(genderInput: string) {
+        if(genderInput.toLowerCase() === 'male') {
+            await this.elements.genderMaleRadioButton().click();
         }
-        else if(data['gender'].toLowerCase() === 'female') {
-            this.elements.genderFemaleRadioButton().click();
+        else if(genderInput.toLowerCase() === 'female') {
+            await this.elements.genderFemaleRadioButton().click();
         }
         else {
             throw Error("Only 'male' or 'female' can choose as gender.");
         }
 
-        //Change data from object to random characters it won't reregister the same user with different email.
-        this.elements.firstnameTextbox().fill(data['firstname']);
-        this.elements.lastnameTextbox().fill(data['lastname']);
-        this.elements.emailTextbox().fill(this.createRandomEmail());
-        this.elements.passwordTextbox().fill(data['password']);
-        this.elements.confirmPasswordTextbox().fill(data['password']);
-        this.elements.continueButton().click();
+        await this.elements.firstnameTextbox().fill(this.createRandomString(5));
+        await this.elements.lastnameTextbox().fill(this.createRandomString(5));
+        await this.elements.emailTextbox().fill(this.createRandomEmail());
+
+        const pwd: string = this.createRandomString(6);
+        await this.elements.passwordTextbox().fill(pwd);
+        await this.elements.confirmPasswordTextbox().fill(pwd);
+        await this.elements.registerButton().click();
     }
 
     createRandomString(length: number) {
