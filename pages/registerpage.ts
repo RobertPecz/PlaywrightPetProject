@@ -14,14 +14,16 @@ class RegisterPage {
         firstnameTextbox : () => this.page.getByTestId('FirstName'),
         lastnameTextbox : () => this.page.getByTestId('LastName'),
         emailTextbox : () => this.page.getByTestId('Email'),
+        emailTextboxWrongEmail : () => this.page.locator("//input[@data-val-email='Wrong email']"),
         passwordTextbox : () => this.page.getByTestId('Password'),
         confirmPasswordTextbox : () => this.page.getByTestId('ConfirmPassword'),
         registerButton : () => this.page.getByTestId('register-button'),
         registrationCompleteText : (resultText : string) => this.page.locator(`//div[contains(text(), "${resultText}")]`),
-        continueButton : () => this.page.locator("//input[@value='Continue']")
+        continueButton : () => this.page.locator("//input[@value='Continue']"),
+        fieldValidationError : (resultText : string) => this.page.locator(`//span[contains(text(), "${resultText}")]`)
     }
 
-    async populateRegisterData(genderInput: string) {
+    async populateRegisterData(genderInput: string, isValidEmail: boolean) {
         if(genderInput.toLowerCase() === 'male') {
             await this.elements.genderMaleRadioButton().click();
         }
@@ -34,7 +36,12 @@ class RegisterPage {
 
         await this.elements.firstnameTextbox().fill(this.createRandomString(5));
         await this.elements.lastnameTextbox().fill(this.createRandomString(5));
-        await this.elements.emailTextbox().fill(this.createRandomEmail());
+        if (isValidEmail) {
+            await this.elements.emailTextbox().fill(this.createRandomEmail());
+        }
+        else {
+            await this.elements.emailTextbox().fill(this.createRandomString(10));
+        }
 
         const pwd: string = this.createRandomString(6);
         await this.elements.passwordTextbox().fill(pwd);

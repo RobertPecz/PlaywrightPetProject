@@ -1,5 +1,6 @@
 {
     "loginUnsuccesfulErrorMessage": "Login was unsuccessful. Please correct the errors and try again.",
     "credentialsIncorrectErrorMessage": "The credentials provided are incorrect",
-    "invalidEmailErrorMessage": "Please enter a valid email address."
+    "invalidEmailLoginErrorMessage": "Please enter a valid email address.",
+    "invalidEmailRegistrationErrorMessage": "Wrong email"
 }

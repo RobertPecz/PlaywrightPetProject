@@ -47,7 +47,7 @@ test('User log in invalid email', async({ page }) => {
   });
 
   await test.step('Validate that correct error messages appear', async() => {
-    await expect(mainPage.elements.enterValidEmailErrorLabel()).toHaveText(errorMessage.invalidEmailErrorMessage);
+    await expect(mainPage.elements.enterValidEmailErrorLabel()).toHaveText(errorMessage.invalidEmailLoginErrorMessage);
   });
 });
 
