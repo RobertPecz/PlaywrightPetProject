@@ -1,5 +1,7 @@
 {
     "genderMale": "Male",
     "genderFemale": "Female",
-    "loginSuccesfulMessage": "Your registration completed"
+    "loginSuccesfulMessage": "Your registration completed",
+    "dataValmsgForPasswordData": "Password",
+    "dataValmsgForConfirmPasswordData": "ConfirmPassword"
 }

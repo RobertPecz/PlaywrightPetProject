@@ -20,10 +20,19 @@ class RegisterPage {
         registerButton : () => this.page.getByTestId('register-button'),
         registrationCompleteText : (resultText : string) => this.page.locator(`//div[contains(text(), "${resultText}")]`),
         continueButton : () => this.page.locator("//input[@value='Continue']"),
-        fieldValidationError : (resultText : string) => this.page.locator(`//span[contains(text(), "${resultText}")]`)
+        fieldValidationError : (resultText : string) => this.page.locator(`//span[contains(text(), "${resultText}")]`),
+        passwordValidationField: (dataValmsgFor: string) => this.page.locator(`//span[@data-valmsg-for="${dataValmsgFor}"]/span`)    
     }
 
-    async populateRegisterData(genderInput: string, isValidEmail: boolean) {
+    async populateRegisterData({
+        genderInput, 
+        isValidEmail = true, 
+        validPasswordNumber = 6 
+    } : { 
+        genderInput: string, 
+        isValidEmail?: boolean, 
+        validPasswordNumber?: number
+    }) {
         if(genderInput.toLowerCase() === 'male') {
             await this.elements.genderMaleRadioButton().click();
         }
@@ -36,14 +45,10 @@ class RegisterPage {
 
         await this.elements.firstnameTextbox().fill(this.createRandomString(5));
         await this.elements.lastnameTextbox().fill(this.createRandomString(5));
-        if (isValidEmail) {
-            await this.elements.emailTextbox().fill(this.createRandomEmail());
-        }
-        else {
-            await this.elements.emailTextbox().fill(this.createRandomString(10));
-        }
 
-        const pwd: string = this.createRandomString(6);
+        await this.elements.emailTextbox().fill(this.createRandomEmail(isValidEmail));
+
+        const pwd: string = this.createRandomString(validPasswordNumber);
         await this.elements.passwordTextbox().fill(pwd);
         await this.elements.confirmPasswordTextbox().fill(pwd);
         await this.elements.registerButton().click();
@@ -60,10 +65,14 @@ class RegisterPage {
         return result;
     }
 
-    createRandomEmail() {
+    createRandomEmail(isValid?: boolean) {
         let randomEmail = '';
-        randomEmail += this.createRandomString(5) + "@" + this.createRandomString(5) + ".com"
-        
+        if(isValid === true) {
+            randomEmail += this.createRandomString(5) + "@" + this.createRandomString(5) + ".com";
+        }
+        else {
+            randomEmail = this.createRandomString(10);
+        }
         return randomEmail;
     }
 }
