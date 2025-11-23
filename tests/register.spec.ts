@@ -12,14 +12,13 @@ test.beforeEach(async ({ page }) => {
 test('Register user with valid data', async ({ page }) => {
     let registerpage: RegisterPage;
     const mainPage = new MainPage(page);
-    const isValidEmail = true;
 
     await test.step('Navigate and populate the registration data', async () => {
         registerpage = await mainPage.navigateToRegisterPage();
     });
 
     await test.step('Populate register data', async () => {
-        await registerpage.populateRegisterData(registerPageData.genderMale, isValidEmail);
+        await registerpage.populateRegisterData({genderInput: registerPageData.genderFemale});
     });
 
     await test.step('Validate that the registration was successful', async () => {
@@ -31,18 +30,52 @@ test('Register user with valid data', async ({ page }) => {
 test('Register user with invalid email', async ({ page }) => {
     let registerpage: RegisterPage;
     const mainPage = new MainPage(page);
-    const isValidEmail = false;
 
     await test.step('Navigate and populate the registration data', async () => {
         registerpage = await mainPage.navigateToRegisterPage();
     });
 
     await test.step('Populate register data with invalid email', async () => {
-        await registerpage.populateRegisterData(registerPageData.genderMale, isValidEmail);
+        await registerpage.populateRegisterData({genderInput: registerPageData.genderFemale, isValidEmail: false});
     });
 
     await test.step('Validate that the email is invalid', async () => {
         await expect(registerpage.elements.emailTextboxWrongEmail()).toBeVisible();
         await expect(registerpage.elements.fieldValidationError(errorMessagesData.invalidEmailRegistrationErrorMessage)).toBeVisible();
     });    
+})
+
+test('Register user with valid email and invalid password', async ({ page }) => {
+    let registerpage: RegisterPage;
+    const mainPage = new MainPage(page);
+
+    await test.step('Navigate and populate the registration data', async () => {
+        registerpage = await mainPage.navigateToRegisterPage();
+    });
+
+    await test.step('Populate register data', async () => {
+        await registerpage.populateRegisterData({genderInput: registerPageData.genderMale, validPasswordNumber: 1});
+    });
+
+    await test.step('Validate that the password is invalid', async () => {
+        await expect(registerpage.elements.fieldValidationError(errorMessagesData.invalidPasswordErrorMessage)).toBeVisible();
+    });  
+})
+
+test('Register user with valid email and empty password', async ({ page }) => {
+    let registerpage: RegisterPage;
+    const mainPage = new MainPage(page);
+
+    await test.step('Navigate and populate the registration data', async () => {
+        registerpage = await mainPage.navigateToRegisterPage();
+    });
+
+    await test.step('Populate register data', async () => {
+        await registerpage.populateRegisterData({genderInput: registerPageData.genderMale, validPasswordNumber: 0});
+    });
+
+    await test.step('Validate that the password is invalid', async () => {
+        await expect(registerpage.elements.passwordValidationField(registerPageData.dataValmsgForPasswordData)).toHaveText(errorMessagesData.missingPasswordErrorMessage);
+        await expect(registerpage.elements.passwordValidationField(registerPageData.dataValmsgForConfirmPasswordData)).toHaveText(errorMessagesData.missingPasswordErrorMessage);
+    });  
 })
