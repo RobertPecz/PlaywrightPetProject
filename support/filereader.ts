@@ -12,7 +12,7 @@ class FileReaderHelper {
      * @returns The string from the pat file.
      */
     readPat(patFilePath: string): string {
-        let token = process.env.PAT;
+        let token = process.env.GITHUB_TOKEN;
         
         if(!token) {
             let patFromFile: string = fs.readFileSync(patFilePath, 'utf-8');
