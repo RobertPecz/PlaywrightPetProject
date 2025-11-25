@@ -12,13 +12,17 @@ class FileReaderHelper {
      * @returns The string from the pat file.
      */
     readPat(patFilePath: string): string {
-        let token = process.env.GITHUB_TOKEN;
-        
-        if(!token) {
-            let patFromFile: string = fs.readFileSync(patFilePath, 'utf-8');
-            return patFromFile.substring(0, patFromFile.length - 1);
+        const token = process.env.GITHUB_TOKEN;
+
+        if (token) {
+            console.log('Using GitHub Action token');
+            return token;
         }
-        return token;
+
+        // Local development fallback:
+        console.warn('GITHUB_TOKEN not found — reading PAT from file');
+        const patFromFile = fs.readFileSync(patFilePath, 'utf-8');
+        return patFromFile.trim();
     }
 
     /**
@@ -32,7 +36,7 @@ class FileReaderHelper {
      */
     readTestCaseExcelFile(sheetName: string, cellLetter: string, cellNumber: string) {
         try {
-            const filePath: string = path.resolve(__dirname, '../testcases/automation_practice_testcases.xlsx');
+            const filePath = path.resolve(process.cwd(), 'testcases/automation_practice_testcases.xlsx');
             const workbook: XLSX.WorkBook = XLSX.readFile(filePath);
             const sheet: XLSX.WorkSheet = workbook.Sheets[sheetName];
             
