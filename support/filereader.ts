@@ -12,7 +12,7 @@ class FileReaderHelper {
      * @returns The string from the pat file.
      */
     readPat(patFilePath: string): string {
-        const token = process.env.GITHUB_TOKEN;
+        const token = process.env.PAT;
 
         if (token) {
             console.log('Using GitHub Action token');

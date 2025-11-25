@@ -13,7 +13,7 @@ jobs:
     runs-on: ubuntu-latest
 
     env:
-      GITHUB_TOKEN: ${{ github.token }} 
+      AUTH_TOKEN: ${{ github.actor != 'dependabot[bot]' && secrets.PAT || github.token }}
     
     steps:
     - uses: actions/checkout@v4
@@ -24,6 +24,8 @@ jobs:
       run: npm ci
     - name: Debug token               
       run: 'echo "Token length: ${#GITHUB_TOKEN}"'
+    - name: Debug actor
+      run: 'echo "Actor: ${{ github.actor }}"'
     - name: Install Playwright Browsers
       run: npx playwright install --with-deps
     - name: Run Playwright tests
