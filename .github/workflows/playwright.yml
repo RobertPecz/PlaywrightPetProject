@@ -1,7 +1,5 @@
 name: Playwright Tests
-permissions:
-  contents: write
-  pull-requests: write
+permissions: write-all
 on:
   push:
     branches: [ main, master ]
