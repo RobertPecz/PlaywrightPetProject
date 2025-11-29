@@ -13,7 +13,7 @@ jobs:
     runs-on: ubuntu-latest
 
     env:
-      AUTH_TOKEN: ${{ github.actor != 'dependabot[bot]' && secrets.PAT || github.token }}
+      AUTH_TOKEN: ${{ github.token }}
     
     steps:
     - uses: actions/checkout@v4
