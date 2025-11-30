@@ -1,7 +1,6 @@
 name: Playwright Tests
-permissions:
-  contents: write
-  pull-requests: write
+permissions: 
+  issues: write
 on:
   push:
     branches: [ main, master ]
@@ -13,7 +12,7 @@ jobs:
     runs-on: ubuntu-latest
 
     env:
-      AUTH_TOKEN: ${{ github.actor != 'dependabot[bot]' && secrets.PAT || github.token }}
+      AUTH_TOKEN: ${{ github.token }}
     
     steps:
     - uses: actions/checkout@v4
@@ -22,9 +21,11 @@ jobs:
         node-version: lts/*
     - name: Install dependencies
       run: npm ci
-    - name: Debug token               
-      run: 'echo "Token length: ${#GITHUB_TOKEN}"'
-    - name: Debug actor
+    - name: Test GitHub API
+      run: |
+        curl -I -H "Authorization: Bearer $AUTH_TOKEN" \
+        https://api.github.com/repos/${{ github.repository }}
+    - name: Log actor
       run: 'echo "Actor: ${{ github.actor }}"'
     - name: Install Playwright Browsers
       run: npx playwright install --with-deps
