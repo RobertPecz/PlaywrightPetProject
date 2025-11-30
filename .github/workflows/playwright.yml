@@ -25,16 +25,7 @@ jobs:
       run: |
         curl -I -H "Authorization: Bearer $AUTH_TOKEN" \
         https://api.github.com/repos/${{ github.repository }}
-    - name: Try to create an issue
-      run: |
-        curl -X POST \
-        -H "Authorization: Bearer $AUTH_TOKEN" \
-        -H "Accept: application/vnd.github+json" \
-        https://api.github.com/repos/${{ github.repository }}/issues \
-        -d '{"title": "Test from CI"}'
-    - name: Debug token               
-      run: 'echo "Token length: ${#GITHUB_TOKEN}"'
-    - name: Debug actor
+    - name: Log actor
       run: 'echo "Actor: ${{ github.actor }}"'
     - name: Install Playwright Browsers
       run: npx playwright install --with-deps
