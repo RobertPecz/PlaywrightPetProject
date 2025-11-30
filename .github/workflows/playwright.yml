@@ -1,5 +1,6 @@
 name: Playwright Tests
-permissions: write-all
+permissions: 
+  issues: write
 on:
   push:
     branches: [ main, master ]
