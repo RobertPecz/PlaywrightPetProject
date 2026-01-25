@@ -27,11 +27,13 @@ class RegisterPage {
     async populateRegisterData({
         genderInput, 
         isValidEmail = true, 
-        validPasswordNumber = 6 
+        validPasswordNumber = 6,
+        emptyEmail = false
     } : { 
         genderInput: string, 
         isValidEmail?: boolean, 
-        validPasswordNumber?: number
+        validPasswordNumber?: number,
+        emptyEmail?: boolean
     }) {
         if(genderInput.toLowerCase() === 'male') {
             await this.elements.genderMaleRadioButton().click();
@@ -46,7 +48,9 @@ class RegisterPage {
         await this.elements.firstnameTextbox().fill(this.createRandomString(5));
         await this.elements.lastnameTextbox().fill(this.createRandomString(5));
 
-        await this.elements.emailTextbox().fill(this.createRandomEmail(isValidEmail));
+        if(!emptyEmail) {
+            await this.elements.emailTextbox().fill(this.createRandomEmail(isValidEmail));
+        }
 
         const pwd: string = this.createRandomString(validPasswordNumber);
         await this.elements.passwordTextbox().fill(pwd);

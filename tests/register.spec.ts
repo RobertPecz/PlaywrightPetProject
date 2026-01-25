@@ -79,3 +79,20 @@ test('Register user with valid email and empty password', async ({ page }) => {
         await expect(registerpage.elements.passwordValidationField(registerPageData.dataValmsgForConfirmPasswordData)).toHaveText(errorMessagesData.missingPasswordErrorMessage);
     });  
 })
+
+test('Register user with empty email and valid password', async ({ page }) => {
+    let registerpage: RegisterPage;
+    const mainPage = new MainPage(page);
+
+    await test.step('Navigate and populate the registration data', async () => {
+        registerpage = await mainPage.navigateToRegisterPage();
+    });
+
+    await test.step('Populate register data with empty email', async () => {
+        await registerpage.populateRegisterData({genderInput: registerPageData.genderFemale, isValidEmail: true, emptyEmail: true});
+    });
+
+    await test.step('Validate that the email is required', async () => {
+        await expect(registerpage.elements.fieldValidationError(errorMessagesData.missingEmailErrorMessage)).toBeVisible();
+    });  
+})

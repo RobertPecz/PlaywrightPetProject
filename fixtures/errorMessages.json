@@ -4,5 +4,7 @@
     "invalidEmailLoginErrorMessage": "Please enter a valid email address.",
     "invalidEmailRegistrationErrorMessage": "Wrong email",
     "invalidPasswordErrorMessage": "The password should have at least 6 characters.",
-    "missingPasswordErrorMessage": "Password is required."
+    "missingPasswordErrorMessage": "Password is required.",
+    "missingEmailErrorMessage": "Email is required."
+    
 }
