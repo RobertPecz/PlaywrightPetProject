@@ -1,3 +1,6 @@
+#Local vscode settings
+.vscode/
+
 #Storing local pat
 pat.txt
 

@@ -1,4 +1,5 @@
 import { Page } from '@playwright/test';
+import mainPageData from '../fixtures/mainpageData.json'
 
 class RegisterPage {
     readonly page: Page;
@@ -21,6 +22,7 @@ class RegisterPage {
         registrationCompleteText : (resultText : string) => this.page.locator(`//div[contains(text(), "${resultText}")]`),
         continueButton : () => this.page.locator("//input[@value='Continue']"),
         fieldValidationError : (resultText : string) => this.page.locator(`//span[contains(text(), "${resultText}")]`),
+        liFieldValidationError: (resultText: string) => this.page.locator(`//li[contains(text(), "${resultText}")]`),
         passwordValidationField: (dataValmsgFor: string) => this.page.locator(`//span[@data-valmsg-for="${dataValmsgFor}"]/span`)    
     }
 
@@ -48,8 +50,12 @@ class RegisterPage {
         await this.elements.firstnameTextbox().fill(this.createRandomString(5));
         await this.elements.lastnameTextbox().fill(this.createRandomString(5));
 
-        if(!emptyEmail) {
+        if(!emptyEmail && isValidEmail) {
             await this.elements.emailTextbox().fill(this.createRandomEmail(isValidEmail));
+        }
+
+        else if(!emptyEmail && !isValidEmail) {
+            await this.elements.emailTextboxWrongEmail().fill(mainPageData.email);
         }
 
         const pwd: string = this.createRandomString(validPasswordNumber);
