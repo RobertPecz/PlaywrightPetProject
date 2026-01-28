@@ -5,6 +5,6 @@
     "invalidEmailRegistrationErrorMessage": "Wrong email",
     "invalidPasswordErrorMessage": "The password should have at least 6 characters.",
     "missingPasswordErrorMessage": "Password is required.",
-    "missingEmailErrorMessage": "Email is required."
-    
+    "missingEmailErrorMessage": "Email is required.",
+    "alreadyRegisteredErrorMessage": "The specified email already exists"   
 }

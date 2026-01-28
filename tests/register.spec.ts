@@ -96,3 +96,20 @@ test('Register user with empty email and valid password', async ({ page }) => {
         await expect(registerpage.elements.fieldValidationError(errorMessagesData.missingEmailErrorMessage)).toBeVisible();
     });  
 })
+
+test('Register user with already registered email', async ({ page }) => {
+    let registerpage: RegisterPage;
+    const mainPage = new MainPage(page);
+
+    await test.step('Navigate and populate the registration data', async () => {
+        registerpage = await mainPage.navigateToRegisterPage();
+    });
+
+    await test.step('Populate register data with already registered email', async () => {
+        await registerpage.populateRegisterData({genderInput: registerPageData.genderFemale, alreadyRegisteredEmail: true});
+    });
+
+    await test.step('Validate that the email is already registered', async () => {
+        await expect(registerpage.elements.liFieldValidationError(errorMessagesData.alreadyRegisteredErrorMessage)).toBeVisible();
+    });
+})
