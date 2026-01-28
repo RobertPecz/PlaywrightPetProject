@@ -106,7 +106,7 @@ test('Register user with already registered email', async ({ page }) => {
     });
 
     await test.step('Populate register data with already registered email', async () => {
-        await registerpage.populateRegisterData({genderInput: registerPageData.genderFemale, isValidEmail: false, emptyEmail: false});
+        await registerpage.populateRegisterData({genderInput: registerPageData.genderFemale, alreadyRegisteredEmail: true});
     });
 
     await test.step('Validate that the email is already registered', async () => {
