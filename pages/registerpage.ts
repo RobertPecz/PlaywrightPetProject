@@ -27,35 +27,44 @@ class RegisterPage {
     }
 
     async populateRegisterData({
-        genderInput, 
+        genderInput = 'male', 
         isValidEmail = true, 
         validPasswordNumber = 6,
-        emptyEmail = false
+        emptyEmail = false,
+        alreadyRegisteredEmail = false,
     } : { 
-        genderInput: string, 
+        genderInput?: string, 
         isValidEmail?: boolean, 
         validPasswordNumber?: number,
-        emptyEmail?: boolean
-    }) {
-        if(genderInput.toLowerCase() === 'male') {
-            await this.elements.genderMaleRadioButton().click();
-        }
-        else if(genderInput.toLowerCase() === 'female') {
-            await this.elements.genderFemaleRadioButton().click();
-        }
-        else {
-            throw Error("Only 'male' or 'female' can choose as gender.");
+        emptyEmail?: boolean,
+        alreadyRegisteredEmail?: boolean
+    } = {}) {
+        switch(genderInput.toLowerCase()) {
+            case 'male':
+                await this.elements.genderMaleRadioButton().click();
+                break;
+            case 'female':
+                await this.elements.genderFemaleRadioButton().click();
+                break;
+            default:
+                throw Error("Only 'male' or 'female' can choose as gender.");
         }
 
         await this.elements.firstnameTextbox().fill(this.createRandomString(5));
         await this.elements.lastnameTextbox().fill(this.createRandomString(5));
 
-        if(!emptyEmail && isValidEmail) {
-            await this.elements.emailTextbox().fill(this.createRandomEmail(isValidEmail));
-        }
-
-        else if(!emptyEmail && !isValidEmail) {
-            await this.elements.emailTextboxWrongEmail().fill(mainPageData.email);
+        switch(true) {
+            case emptyEmail:
+                // Empty email - no fill
+                break;
+            case !isValidEmail:
+                await this.elements.emailTextboxWrongEmail().fill(this.createRandomEmail(isValidEmail));
+                break;
+            case alreadyRegisteredEmail:
+                await this.elements.emailTextbox().fill(mainPageData.email);
+                break;
+            default:
+                await this.elements.emailTextbox().fill(this.createRandomEmail(isValidEmail));
         }
 
         const pwd: string = this.createRandomString(validPasswordNumber);
