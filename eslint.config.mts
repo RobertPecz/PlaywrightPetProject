@@ -10,7 +10,6 @@ export default defineConfig([
     rules: {
       "@typescript-eslint/no-unused-vars": "error",
       "@typescript-eslint/no-empty-interface": "error",
-      "@typescript-eslint/dot-notation": "warn",
       "@typescript-eslint/no-explicit-any": "error",
       "@typescript-eslint/no-useless-constructor": "warn",
       "@typescript-eslint/no-useless-default-assignment": "warn",
