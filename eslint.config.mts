@@ -29,7 +29,8 @@ export default defineConfig([
       "keyword-spacing": ["error", { "before": true, "after": true }],
       "camelcase": "warn",
   }, 
-  extends: ["js/recommended"], 
+  extends: ["js/recommended", ...tseslint.configs.recommended,
+      ...tseslint.configs.recommendedTypeChecked], 
   languageOptions: 
   { globals: globals.browser } },
   tseslint.configs.recommended,
