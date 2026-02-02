@@ -2,14 +2,36 @@
   "name": "playwrightpetproject",
   "version": "1.0.0",
   "main": "index.js",
-  "scripts": {},
+  "scripts": {
+    "prepare": "husky"
+  },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "description": "",
   "devDependencies": {
+    "@eslint/js": "^9.39.2",
     "@playwright/test": "^1.58.1",
-    "@types/node": "^25.0.10"
+    "@types/eslint__js": "^8.42.3",
+    "@types/node": "^25.0.10",
+    "eslint": "^9.39.2",
+    "eslint-plugin-playwright": "^2.5.1",
+    "globals": "^17.3.0",
+    "husky": "^9.1.7",
+    "jiti": "^2.6.1",
+    "lint-staged": "^16.2.7",
+    "prettier": "3.8.1",
+    "prettier-plugin-sort-imports": "^1.8.9",
+    "typescript": "^5.9.3",
+    "typescript-eslint": "^8.54.0"
+  },
+  "lint-staged": {
+    "*.{ts,js,json,md}": [
+      "prettier --write"
+    ],
+    "*.{ts,js}": [
+      "eslint --fix"
+    ]
   },
   "dependencies": {
     "eslint-plugin-tsdoc": "^0.5.0",
