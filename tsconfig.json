@@ -3,6 +3,11 @@
     "esModuleInterop": true,
     "resolveJsonModule": true,
     "noEmit": true,
-    "strictNullChecks": true
-  }
+    "strictNullChecks": true,
+    "declaration": true,
+    "composite": true,
+    "emitDeclarationOnly": true
+  },
+  "files": [],
+  "references": [{ "path": "./tsconfig.eslint.json" }]
 }

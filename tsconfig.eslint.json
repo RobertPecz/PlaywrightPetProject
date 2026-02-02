@@ -1,0 +1,11 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    // ...existing options...
+    "module": "es2022",
+    "moduleResolution": "node",
+    "target": "es2022"
+  },
+  "files": ["eslint.config.mts"],
+  "include": ["**/*.ts", "**/*.mts", "**/*.cts", "eslint.config.mts"]
+}
