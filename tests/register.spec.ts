@@ -18,7 +18,7 @@ test('Register user with valid data', async ({ page }) => {
   });
 
   await test.step('Populate register data', async () => {
-    await registerpage.populateRegisterData({ genderInput: registerPageData.genderFemale });
+    await registerpage.populateRegisterData();
   });
 
   await test.step('Validate that the registration was successful', async () => {
@@ -36,7 +36,7 @@ test('Register user with invalid email', async ({ page }) => {
   });
 
   await test.step('Populate register data with invalid email', async () => {
-    await registerpage.populateRegisterData({ genderInput: registerPageData.genderFemale, isValidEmail: false });
+    await registerpage.populateRegisterData({ emailOptions: { isValidEmail: false } });
   });
 
   await test.step('Validate that the email is invalid', async () => {
@@ -56,7 +56,7 @@ test('Register user with valid email and invalid password', async ({ page }) => 
   });
 
   await test.step('Populate register data', async () => {
-    await registerpage.populateRegisterData({ genderInput: registerPageData.genderMale, validPasswordNumber: 1 });
+    await registerpage.populateRegisterData({ validPasswordNumber: { validPasswordNumber: 3 } });
   });
 
   await test.step('Validate that the password is invalid', async () => {
@@ -75,7 +75,7 @@ test('Register user with valid email and empty password', async ({ page }) => {
   });
 
   await test.step('Populate register data', async () => {
-    await registerpage.populateRegisterData({ genderInput: registerPageData.genderMale, validPasswordNumber: 0 });
+    await registerpage.populateRegisterData({ validPasswordNumber: { validPasswordNumber: 0 } });
   });
 
   await test.step('Validate that the password is invalid', async () => {
@@ -97,11 +97,7 @@ test('Register user with empty email and valid password', async ({ page }) => {
   });
 
   await test.step('Populate register data with empty email', async () => {
-    await registerpage.populateRegisterData({
-      genderInput: registerPageData.genderFemale,
-      isValidEmail: true,
-      emptyEmail: true,
-    });
+    await registerpage.populateRegisterData({ emailOptions: { emptyEmail: true } });
   });
 
   await test.step('Validate that the email is required', async () => {
@@ -118,15 +114,30 @@ test('Register user with already registered email', async ({ page }) => {
   });
 
   await test.step('Populate register data with already registered email', async () => {
-    await registerpage.populateRegisterData({
-      genderInput: registerPageData.genderFemale,
-      alreadyRegisteredEmail: true,
-    });
+    await registerpage.populateRegisterData({ emailOptions: { alreadyRegisteredEmail: true } });
   });
 
   await test.step('Validate that the email is already registered', async () => {
     await expect(
       registerpage.elements.liFieldValidationError(errorMessagesData.alreadyRegisteredErrorMessage),
     ).toBeVisible();
+  });
+});
+
+test('Register user with empty gender', async ({ page }) => {
+  let registerpage: RegisterPage;
+  const mainPage = new MainPage(page);
+
+  await test.step('Navigate and populate the registration data', async () => {
+    registerpage = await mainPage.navigateToRegisterPage();
+  });
+
+  await test.step('Populate register data with empty gender', async () => {
+    await registerpage.populateRegisterData({ genderOptions: { genderInput: undefined } });
+  });
+
+  await test.step('Validate that the registration was successful', async () => {
+    await expect(registerpage.elements.registrationCompleteText(registerPageData.loginSuccesfulMessage)).toBeVisible();
+    await expect(registerpage.elements.continueButton()).toBeVisible();
   });
 });

@@ -1,6 +1,33 @@
 import mainPageData from '../fixtures/mainpageData.json';
 import { Page } from '@playwright/test';
 
+export enum gender {
+  male = 'male',
+  female = 'female',
+}
+
+interface genderOptions {
+  genderInput?: gender;
+}
+
+interface firstNameInput {
+  firstNameInput?: string;
+}
+
+interface lastNameInput {
+  lastNameInput?: string;
+}
+
+interface validPasswordNumber {
+  validPasswordNumber?: number;
+}
+
+interface emailOptions {
+  isValidEmail?: boolean;
+  emptyEmail?: boolean;
+  alreadyRegisteredEmail?: boolean;
+}
+
 class RegisterPage {
   readonly page: Page;
 
@@ -27,49 +54,61 @@ class RegisterPage {
   };
 
   async populateRegisterData({
-    genderInput = 'male',
-    isValidEmail = true,
-    validPasswordNumber = 6,
-    emptyEmail = false,
-    alreadyRegisteredEmail = false,
+    genderOptions = { genderInput: gender.male },
+    firstNameInput = { firstNameInput: this.createRandomString(5) },
+    lastNameInput = { lastNameInput: this.createRandomString(5) },
+    emailOptions = { isValidEmail: true },
+    validPasswordNumber = { validPasswordNumber: 6 },
   }: {
-    genderInput?: string;
-    isValidEmail?: boolean;
-    validPasswordNumber?: number;
-    emptyEmail?: boolean;
-    alreadyRegisteredEmail?: boolean;
+    genderOptions?: genderOptions;
+    firstNameInput?: firstNameInput;
+    lastNameInput?: lastNameInput;
+    emailOptions?: emailOptions;
+    validPasswordNumber?: validPasswordNumber;
   } = {}) {
-    switch (genderInput.toLowerCase()) {
-      case 'male':
+    switch (genderOptions?.genderInput) {
+      case gender.male:
         await this.elements.genderMaleRadioButton().click();
         break;
-      case 'female':
+      case gender.female:
         await this.elements.genderFemaleRadioButton().click();
         break;
       default:
-        throw Error("Only 'male' or 'female' can choose as gender.");
+        console.log('No gender input provided');
     }
 
-    await this.elements.firstnameTextbox().fill(this.createRandomString(5));
-    await this.elements.lastnameTextbox().fill(this.createRandomString(5));
+    if (firstNameInput?.firstNameInput) {
+      await this.elements.firstnameTextbox().fill(firstNameInput.firstNameInput);
+    } else {
+      console.log('No first name input provided');
+    }
+
+    if (lastNameInput?.lastNameInput) {
+      await this.elements.lastnameTextbox().fill(lastNameInput.lastNameInput);
+    } else {
+      console.log('No last name input provided');
+    }
 
     switch (true) {
-      case emptyEmail:
+      case emailOptions?.emptyEmail === true:
         // Empty email - no fill
         break;
-      case !isValidEmail:
-        await this.elements.emailTextboxWrongEmail().fill(this.createRandomEmail(isValidEmail));
+      case emailOptions?.isValidEmail === false:
+        await this.elements.emailTextboxWrongEmail().fill(this.createRandomEmail(emailOptions.isValidEmail));
         break;
-      case alreadyRegisteredEmail:
+      case emailOptions?.alreadyRegisteredEmail === true:
         await this.elements.emailTextbox().fill(mainPageData.email);
         break;
       default:
-        await this.elements.emailTextbox().fill(this.createRandomEmail(isValidEmail));
+        await this.elements.emailTextbox().fill(this.createRandomEmail(emailOptions?.isValidEmail));
     }
 
-    const pwd: string = this.createRandomString(validPasswordNumber);
-    await this.elements.passwordTextbox().fill(pwd);
-    await this.elements.confirmPasswordTextbox().fill(pwd);
+    if (validPasswordNumber?.validPasswordNumber !== undefined) {
+      const pwd: string = this.createRandomString(validPasswordNumber.validPasswordNumber);
+      await this.elements.passwordTextbox().fill(pwd);
+      await this.elements.confirmPasswordTextbox().fill(pwd);
+    }
+
     await this.elements.registerButton().click();
   }
 
