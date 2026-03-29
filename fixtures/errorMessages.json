@@ -1,10 +1,11 @@
 {
-    "loginUnsuccesfulErrorMessage": "Login was unsuccessful. Please correct the errors and try again.",
-    "credentialsIncorrectErrorMessage": "The credentials provided are incorrect",
-    "invalidEmailLoginErrorMessage": "Please enter a valid email address.",
-    "invalidEmailRegistrationErrorMessage": "Wrong email",
-    "invalidPasswordErrorMessage": "The password should have at least 6 characters.",
-    "missingPasswordErrorMessage": "Password is required.",
-    "missingEmailErrorMessage": "Email is required.",
-    "alreadyRegisteredErrorMessage": "The specified email already exists"   
+  "loginUnsuccesfulErrorMessage": "Login was unsuccessful. Please correct the errors and try again.",
+  "credentialsIncorrectErrorMessage": "The credentials provided are incorrect",
+  "invalidEmailLoginErrorMessage": "Please enter a valid email address.",
+  "invalidEmailRegistrationErrorMessage": "Wrong email",
+  "invalidPasswordErrorMessage": "The password should have at least 6 characters.",
+  "missingPasswordErrorMessage": "Password is required.",
+  "missingEmailErrorMessage": "Email is required.",
+  "missingFirstNameErrorMessage": "First name is required.",
+  "alreadyRegisteredErrorMessage": "The specified email already exists"
 }

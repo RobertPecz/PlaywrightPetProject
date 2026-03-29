@@ -148,4 +148,23 @@ test.describe('Register tests', () => {
       await expect(registerpage.elements.continueButton()).toBeVisible();
     });
   });
+
+  test('Register user without first name', async ({ page }) => {
+    let registerpage: RegisterPage;
+    const mainPage = new MainPage(page);
+
+    await test.step('Navigate to registration page', async () => {
+      registerpage = await mainPage.navigateToRegisterPage();
+    });
+
+    await test.step('Submit registration without first name', async () => {
+      await registerpage.populateRegisterData({ firstNameInput: { firstNameInput: '' } });
+    });
+
+    await test.step('Validate first name required error message', async () => {
+      await expect(
+        registerpage.elements.fieldValidationError(errorMessagesData.missingFirstNameErrorMessage),
+      ).toBeVisible();
+    });
+  });
 });
