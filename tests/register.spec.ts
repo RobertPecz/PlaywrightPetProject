@@ -167,4 +167,23 @@ test.describe('Register tests', () => {
       ).toBeVisible();
     });
   });
+
+  test('Register user without last name', async ({ page }) => {
+    let registerpage: RegisterPage;
+    const mainPage = new MainPage(page);
+
+    await test.step('Navigate to registration page', async () => {
+      registerpage = await mainPage.navigateToRegisterPage();
+    });
+
+    await test.step('Submit registration without last name', async () => {
+      await registerpage.populateRegisterData({ lastNameInput: { lastNameInput: '' } });
+    });
+
+    await test.step('Validate last name required error message', async () => {
+      await expect(
+        registerpage.elements.fieldValidationError(errorMessagesData.missingLastNameErrorMessage),
+      ).toBeVisible();
+    });
+  });
 });
