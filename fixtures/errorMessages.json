@@ -7,5 +7,6 @@
   "missingPasswordErrorMessage": "Password is required.",
   "missingEmailErrorMessage": "Email is required.",
   "missingFirstNameErrorMessage": "First name is required.",
+  "missingLastNameErrorMessage": "Last name is required.",
   "alreadyRegisteredErrorMessage": "The specified email already exists"
 }
