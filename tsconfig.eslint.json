@@ -2,8 +2,8 @@
   "extends": "./tsconfig.json",
   "compilerOptions": {
     // ...existing options...
-    "module": "es2022",
-    "moduleResolution": "node",
+    "module": "node16",
+    "moduleResolution": "node16",
     "target": "es2022"
   },
   "files": ["eslint.config.mts"],

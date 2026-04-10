@@ -18,6 +18,14 @@ class MainPage {
     credentialErrorLabel: () => this.page.locator("//div[@class='validation-summary-errors']/ul/li"),
     enterValidEmailErrorLabel: () => this.page.locator("//span[@class='field-validation-error']/span[@for='Email']"),
     registerButton: () => this.page.locator("//a[text()='Register']"),
+    topMenuBar: () => this.page.locator("//ul[@class='top-menu']"),
+    booksbutton: () => this.elements.topMenuBar().locator("//a[text()='Books']"),
+    computersButton: () => this.elements.topMenuBar().locator("//a[text()='Computers']"),
+    electronicsButton: () => this.elements.topMenuBar().locator("//a[text()='Electronics']"),
+    apparelShouesButton: () => this.elements.topMenuBar().locator("//a[text()='Apparel & Shoes']"),
+    digitalDownloadsButton: () => this.elements.topMenuBar().locator("//a[text()='Digital downloads']"),
+    jewelryButton: () => this.elements.topMenuBar().locator("//a[text()='Jewelry']"),
+    giftCardsButton: () => this.elements.topMenuBar().locator("//a[text()='Gift Cards']"),
   };
 
   async userLogIn(email: string, password: string) {
