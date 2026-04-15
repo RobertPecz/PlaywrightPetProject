@@ -6,6 +6,5 @@
     "moduleResolution": "node16",
     "target": "es2022"
   },
-  "files": ["eslint.config.mts"],
   "include": ["**/*.ts", "**/*.mts", "**/*.cts", "eslint.config.mts"]
 }

@@ -1,7 +1,7 @@
 import errorMessage from '../fixtures/errorMessages.json';
 import mainpageData from '../fixtures/mainpageData.json';
 import { test, expect } from '@playwright/test';
-import MainPage from '../pages/mainpage';
+import MainPage from '../pages/mainPage';
 
 test.describe('Login tests', () => {
   test.beforeEach(async ({ page }) => {

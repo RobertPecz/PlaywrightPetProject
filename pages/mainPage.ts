@@ -1,4 +1,4 @@
-import RegisterPage from './registerpage';
+import RegisterPage from './registerPage';
 import { Page } from '@playwright/test';
 
 class MainPage {
@@ -26,6 +26,7 @@ class MainPage {
     digitalDownloadsButton: () => this.elements.topMenuBar().locator("//a[text()='Digital downloads']"),
     jewelryButton: () => this.elements.topMenuBar().locator("//a[text()='Jewelry']"),
     giftCardsButton: () => this.elements.topMenuBar().locator("//a[text()='Gift Cards']"),
+    shoppingCartButton: () => this.page.locator("//li[@id='topcartlink']"),
   };
 
   async userLogIn(email: string, password: string) {

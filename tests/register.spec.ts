@@ -1,8 +1,8 @@
 import errorMessagesData from '../fixtures/errorMessages.json';
 import registerPageData from '../fixtures/registerData.json';
-import RegisterPage from '../pages/registerpage';
+import RegisterPage from '../pages/registerPage';
 import { test, expect } from '@playwright/test';
-import MainPage from '../pages/mainpage';
+import MainPage from '../pages/mainPage';
 
 test.describe('Register tests', () => {
   test.beforeEach(async ({ page }) => {
