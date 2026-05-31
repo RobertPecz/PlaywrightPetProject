@@ -1,23 +1,29 @@
 ---
 name: GitHub Ticket Fetcher
 description: Fetch and filter GitHub issues from RobertPecz/PlaywrightPetProject
-tools: ["fetch_webpage", "grep_search"]
-applyTo: ["github-issue-processing", "ticket-fetching"]
+tools: ['fetch_webpage', 'grep_search']
+applyTo: ['github-issue-processing', 'ticket-fetching']
 ---
 
 # GitHub Ticket Fetcher Agent
 
 ## Purpose
+
 Fetch and categorize GitHub issues/tickets from the PlaywrightPetProject repository filtered by labels: **enhancement** or **bug**.
+
+> NOTE: This agent is intended to be invoked only by `.github/agents/orchestrator.agent.md`. It does not make workflow decisions or call other agents.
 
 ## Instructions
 
 ### Step 1: Verify GitHub PAT
+
 - Check that `pat.txt` contains a valid GitHub Personal Access Token
 - The token should have `repo` and `read:org` scopes
 
 ### Step 2: Fetch Issues
+
 Query GitHub API for issues with filters:
+
 - Repository: `RobertPecz/PlaywrightPetProject`
 - Labels: `enhancement` OR `bug`
 - State: `open`
@@ -25,12 +31,15 @@ Query GitHub API for issues with filters:
 - Sort: `updated` (descending)
 
 **API Endpoint**:
+
 ```
 GET https://api.github.com/repos/RobertPecz/PlaywrightPetProject/issues?labels=enhancement,bug&state=open&per_page=30&sort=updated&direction=desc
 ```
 
 ### Step 3: Parse Issue Data
+
 For each issue, extract:
+
 - `issue_id`: GitHub issue number
 - `title`: Issue title
 - `description`: Full issue body/description
@@ -40,6 +49,7 @@ For each issue, extract:
 - `url`: GitHub issue URL
 
 ### Step 4: Format Output
+
 Create a structured JSON or markdown list with all issues. Example:
 
 ```json
@@ -59,16 +69,20 @@ Create a structured JSON or markdown list with all issues. Example:
 ```
 
 ### Step 5: Present to User
+
 Show the fetched issues and ask:
+
 1. Which issues should we work on? (select multiple)
 2. Are there any specific requirements not mentioned in the description?
 3. Should we create test cases based on acceptance criteria in the description?
 
 ## Output
+
 - List of selected GitHub issues with details
 - Ready for next step: Test Case Processor
 
 ## Notes
+
 - Rate limit: 60 requests/hour (unauthenticated), 5000/hour (authenticated)
 - Cache results for 1 hour to avoid duplicate API calls
 - Only process "open" issues (not closed/resolved)
