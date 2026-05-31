@@ -1,8 +1,8 @@
 ---
 name: Demo Web Shop Page Objects
 description: Pre-built page object templates for Tricentis Demo Web Shop testing
-tools: ["create_file"]
-applyTo: ["demo-web-shop", "ecommerce-testing"]
+tools: ['create_file']
+applyTo: ['demo-web-shop', 'ecommerce-testing']
 ---
 
 # Demo Web Shop Page Objects Reference
@@ -11,6 +11,8 @@ applyTo: ["demo-web-shop", "ecommerce-testing"]
 
 This document provides page object templates for testing the **Tricentis Demo Web Shop** (https://demowebshop.tricentis.com/).
 
+> NOTE: These templates are intended to be used by the Page Object Generator agent and are not standalone agents themselves.
+
 These templates can be used by the Page Object Generator agent to create standardized page objects for the e-commerce platform.
 
 ---
@@ -18,14 +20,15 @@ These templates can be used by the Page Object Generator agent to create standar
 ## 📋 Core Page Objects
 
 ### 1. BasePage
+
 Base class for all page objects
 
 ```typescript
-import { Page, Locator } from "@playwright/test";
+import { Page, Locator } from '@playwright/test';
 
 export class BasePage {
   protected page: Page;
-  protected baseUrl = "https://demowebshop.tricentis.com";
+  protected baseUrl = 'https://demowebshop.tricentis.com';
 
   constructor(page: Page) {
     this.page = page;
@@ -36,7 +39,7 @@ export class BasePage {
   }
 
   async waitForPageLoad(): Promise<void> {
-    await this.page.waitForLoadState("networkidle");
+    await this.page.waitForLoadState('networkidle');
   }
 
   async isElementVisible(locator: Locator): Promise<boolean> {
@@ -52,24 +55,25 @@ export class BasePage {
 ---
 
 ### 2. HomePage
+
 Main landing page with featured products and navigation
 
 ```typescript
-import { Page, Locator } from "@playwright/test";
-import { BasePage } from "./basepage";
+import { Page, Locator } from '@playwright/test';
+import { BasePage } from './basepage';
 
 export class HomePage extends BasePage {
   // Selectors
   private get searchInput(): Locator {
-    return this.page.locator("#small-searchterms");
+    return this.page.locator('#small-searchterms');
   }
 
   private get searchButton(): Locator {
-    return this.page.locator(".search-box-button");
+    return this.page.locator('.search-box-button');
   }
 
   private get cartCount(): Locator {
-    return this.page.locator(".cart-qty");
+    return this.page.locator('.cart-qty');
   }
 
   private get loginLink(): Locator {
@@ -85,24 +89,24 @@ export class HomePage extends BasePage {
   }
 
   private get categoryLinks(): Locator {
-    return this.page.locator(".top-menu a");
+    return this.page.locator('.top-menu a');
   }
 
   private get productItems(): Locator {
-    return this.page.locator(".product-item");
+    return this.page.locator('.product-item');
   }
 
   private get addToCartButton(): Locator {
-    return this.page.locator(".add-to-cart-button");
+    return this.page.locator('.add-to-cart-button');
   }
 
   private get featuredProducts(): Locator {
-    return this.page.locator(".featured-products");
+    return this.page.locator('.featured-products');
   }
 
   // Methods
   async navigateToHome(): Promise<void> {
-    await this.navigateTo("/");
+    await this.navigateTo('/');
     await this.waitForPageLoad();
   }
 
@@ -114,7 +118,7 @@ export class HomePage extends BasePage {
 
   async viewCart(): Promise<number> {
     const cartText = await this.cartCount.textContent();
-    const count = parseInt(cartText?.match(/\d+/)?.[0] || "0");
+    const count = parseInt(cartText?.match(/\d+/)?.[0] || '0');
     return count;
   }
 
@@ -127,7 +131,7 @@ export class HomePage extends BasePage {
     const buttons = await this.addToCartButton.all();
     if (buttons.length > productIndex) {
       await buttons[productIndex].click();
-      await this.page.waitForLoadState("networkidle");
+      await this.page.waitForLoadState('networkidle');
     }
   }
 
@@ -163,20 +167,21 @@ export class HomePage extends BasePage {
 ---
 
 ### 3. LoginPage
+
 User authentication page
 
 ```typescript
-import { Page, Locator } from "@playwright/test";
-import { BasePage } from "./basepage";
+import { Page, Locator } from '@playwright/test';
+import { BasePage } from './basepage';
 
 export class LoginPage extends BasePage {
   // Selectors
   private get emailInput(): Locator {
-    return this.page.locator("#Email");
+    return this.page.locator('#Email');
   }
 
   private get passwordInput(): Locator {
-    return this.page.locator("#Password");
+    return this.page.locator('#Password');
   }
 
   private get loginButton(): Locator {
@@ -184,11 +189,11 @@ export class LoginPage extends BasePage {
   }
 
   private get rememberMeCheckbox(): Locator {
-    return this.page.locator("#RememberMe");
+    return this.page.locator('#RememberMe');
   }
 
   private get errorMessage(): Locator {
-    return this.page.locator(".validation-summary-errors li");
+    return this.page.locator('.validation-summary-errors li');
   }
 
   private get forgotPasswordLink(): Locator {
@@ -201,7 +206,7 @@ export class LoginPage extends BasePage {
 
   // Methods
   async navigateToLogin(): Promise<void> {
-    await this.navigateTo("/login");
+    await this.navigateTo('/login');
     await this.waitForPageLoad();
   }
 
@@ -221,7 +226,7 @@ export class LoginPage extends BasePage {
   }
 
   async getErrorMessage(): Promise<string> {
-    return (await this.errorMessage.textContent()) || "";
+    return (await this.errorMessage.textContent()) || '';
   }
 
   async verifyLoginPageLoaded(): Promise<boolean> {
@@ -247,32 +252,33 @@ export class LoginPage extends BasePage {
 ---
 
 ### 4. RegisterPage
+
 User registration page
 
 ```typescript
-import { Page, Locator } from "@playwright/test";
-import { BasePage } from "./basepage";
+import { Page, Locator } from '@playwright/test';
+import { BasePage } from './basepage';
 
 export class RegisterPage extends BasePage {
   // Selectors
   private get firstNameInput(): Locator {
-    return this.page.locator("#FirstName");
+    return this.page.locator('#FirstName');
   }
 
   private get lastNameInput(): Locator {
-    return this.page.locator("#LastName");
+    return this.page.locator('#LastName');
   }
 
   private get emailInput(): Locator {
-    return this.page.locator("#Email");
+    return this.page.locator('#Email');
   }
 
   private get passwordInput(): Locator {
-    return this.page.locator("#Password");
+    return this.page.locator('#Password');
   }
 
   private get confirmPasswordInput(): Locator {
-    return this.page.locator("#ConfirmPassword");
+    return this.page.locator('#ConfirmPassword');
   }
 
   private get maleGenderOption(): Locator {
@@ -284,7 +290,7 @@ export class RegisterPage extends BasePage {
   }
 
   private get newsletterCheckbox(): Locator {
-    return this.page.locator("#Newsletter");
+    return this.page.locator('#Newsletter');
   }
 
   private get registerButton(): Locator {
@@ -292,12 +298,12 @@ export class RegisterPage extends BasePage {
   }
 
   private get validationErrors(): Locator {
-    return this.page.locator(".validation-summary-errors li");
+    return this.page.locator('.validation-summary-errors li');
   }
 
   // Methods
   async navigateToRegister(): Promise<void> {
-    await this.navigateTo("/register");
+    await this.navigateTo('/register');
     await this.waitForPageLoad();
   }
 
@@ -321,13 +327,13 @@ export class RegisterPage extends BasePage {
     lastName: string;
     email: string;
     password: string;
-    gender: "M" | "F";
+    gender: 'M' | 'F';
   }): Promise<void> {
     await this.firstNameInput.fill(userData.firstName);
     await this.lastNameInput.fill(userData.lastName);
     await this.emailInput.fill(userData.email);
-    
-    if (userData.gender === "M") {
+
+    if (userData.gender === 'M') {
       await this.maleGenderOption.check();
     } else {
       await this.femaleGenderOption.check();
@@ -361,24 +367,25 @@ export class RegisterPage extends BasePage {
 ---
 
 ### 5. ProductPage
+
 Individual product details page
 
 ```typescript
-import { Page, Locator, expect } from "@playwright/test";
-import { BasePage } from "./basepage";
+import { Page, Locator, expect } from '@playwright/test';
+import { BasePage } from './basepage';
 
 export class ProductPage extends BasePage {
   // Selectors
   private get productName(): Locator {
-    return this.page.locator(".page-title h1");
+    return this.page.locator('.page-title h1');
   }
 
   private get productPrice(): Locator {
-    return this.page.locator(".actual-price");
+    return this.page.locator('.actual-price');
   }
 
   private get productImage(): Locator {
-    return this.page.locator(".product-img img");
+    return this.page.locator('.product-img img');
   }
 
   private get quantityInput(): Locator {
@@ -390,32 +397,32 @@ export class ProductPage extends BasePage {
   }
 
   private get addToWishlistButton(): Locator {
-    return this.page.locator(".add-to-wishlist");
+    return this.page.locator('.add-to-wishlist');
   }
 
   private get productDescription(): Locator {
-    return this.page.locator(".product-description");
+    return this.page.locator('.product-description');
   }
 
   private get skuValue(): Locator {
-    return this.page.locator(".sku-value");
+    return this.page.locator('.sku-value');
   }
 
   private get availabilityStatus(): Locator {
-    return this.page.locator(".availability-status");
+    return this.page.locator('.availability-status');
   }
 
   private get successMessage(): Locator {
-    return this.page.locator(".success-notification");
+    return this.page.locator('.success-notification');
   }
 
   // Methods
   async getProductName(): Promise<string> {
-    return (await this.productName.textContent()) || "";
+    return (await this.productName.textContent()) || '';
   }
 
   async getProductPrice(): Promise<string> {
-    return (await this.productPrice.textContent()) || "";
+    return (await this.productPrice.textContent()) || '';
   }
 
   async setQuantity(quantity: number): Promise<void> {
@@ -424,29 +431,29 @@ export class ProductPage extends BasePage {
 
   async addToCart(): Promise<void> {
     await this.addToCartButton.click();
-    await this.page.waitForLoadState("networkidle");
+    await this.page.waitForLoadState('networkidle');
   }
 
   async addToWishlist(): Promise<void> {
     await this.addToWishlistButton.click();
-    await this.page.waitForLoadState("networkidle");
+    await this.page.waitForLoadState('networkidle');
   }
 
   async getProductDescription(): Promise<string> {
-    return (await this.productDescription.textContent()) || "";
+    return (await this.productDescription.textContent()) || '';
   }
 
   async getSKU(): Promise<string> {
-    return (await this.skuValue.textContent()) || "";
+    return (await this.skuValue.textContent()) || '';
   }
 
   async getAvailabilityStatus(): Promise<string> {
-    return (await this.availabilityStatus.textContent()) || "";
+    return (await this.availabilityStatus.textContent()) || '';
   }
 
   async isProductAvailable(): Promise<boolean> {
     const status = await this.getAvailabilityStatus();
-    return !status.toLowerCase().includes("not available");
+    return !status.toLowerCase().includes('not available');
   }
 
   async verifyProductPageLoaded(): Promise<boolean> {
@@ -467,28 +474,29 @@ export class ProductPage extends BasePage {
 ---
 
 ### 6. CartPage
+
 Shopping cart management page
 
 ```typescript
-import { Page, Locator } from "@playwright/test";
-import { BasePage } from "./basepage";
+import { Page, Locator } from '@playwright/test';
+import { BasePage } from './basepage';
 
 export class CartPage extends BasePage {
   // Selectors
   private get cartItemsTable(): Locator {
-    return this.page.locator("table.cart");
+    return this.page.locator('table.cart');
   }
 
   private get cartRows(): Locator {
-    return this.page.locator("table.cart tbody tr");
+    return this.page.locator('table.cart tbody tr');
   }
 
   private get removeButtons(): Locator {
-    return this.page.locator("button.remove-btn");
+    return this.page.locator('button.remove-btn');
   }
 
   private get quantityInputs(): Locator {
-    return this.page.locator("input.qty-input");
+    return this.page.locator('input.qty-input');
   }
 
   private get updateCartButton(): Locator {
@@ -496,11 +504,11 @@ export class CartPage extends BasePage {
   }
 
   private get subtotal(): Locator {
-    return this.page.locator(".cart-totals .subtotal-value");
+    return this.page.locator('.cart-totals .subtotal-value');
   }
 
   private get total(): Locator {
-    return this.page.locator(".cart-totals .total-value");
+    return this.page.locator('.cart-totals .total-value');
   }
 
   private get checkoutButton(): Locator {
@@ -508,16 +516,16 @@ export class CartPage extends BasePage {
   }
 
   private get continuShoppingButton(): Locator {
-    return this.page.locator("button.continue-button");
+    return this.page.locator('button.continue-button');
   }
 
   private get emptyCartMessage(): Locator {
-    return this.page.locator("text=Your shopping cart is empty");
+    return this.page.locator('text=Your shopping cart is empty');
   }
 
   // Methods
   async navigateToCart(): Promise<void> {
-    await this.navigateTo("/cart");
+    await this.navigateTo('/cart');
     await this.waitForPageLoad();
   }
 
@@ -530,7 +538,7 @@ export class CartPage extends BasePage {
     const buttons = await this.removeButtons.all();
     if (buttons.length > itemIndex) {
       await buttons[itemIndex].click();
-      await this.page.waitForLoadState("networkidle");
+      await this.page.waitForLoadState('networkidle');
     }
   }
 
@@ -543,15 +551,15 @@ export class CartPage extends BasePage {
 
   async updateCart(): Promise<void> {
     await this.updateCartButton.click();
-    await this.page.waitForLoadState("networkidle");
+    await this.page.waitForLoadState('networkidle');
   }
 
   async getSubtotal(): Promise<string> {
-    return (await this.subtotal.textContent()) || "";
+    return (await this.subtotal.textContent()) || '';
   }
 
   async getTotal(): Promise<string> {
-    return (await this.total.textContent()) || "";
+    return (await this.total.textContent()) || '';
   }
 
   async proceedToCheckout(): Promise<void> {
@@ -577,36 +585,37 @@ export class CartPage extends BasePage {
 ---
 
 ### 7. SearchResultsPage
+
 Product search results
 
 ```typescript
-import { Page, Locator } from "@playwright/test";
-import { BasePage } from "./basepage";
+import { Page, Locator } from '@playwright/test';
+import { BasePage } from './basepage';
 
 export class SearchResultsPage extends BasePage {
   // Selectors
   private get productResults(): Locator {
-    return this.page.locator(".product-item");
+    return this.page.locator('.product-item');
   }
 
   private get noResultsMessage(): Locator {
-    return this.page.locator(".no-result");
+    return this.page.locator('.no-result');
   }
 
   private get searchQuery(): Locator {
-    return this.page.locator(".search-results-heading");
+    return this.page.locator('.search-results-heading');
   }
 
   private get productPrices(): Locator {
-    return this.page.locator(".actual-price");
+    return this.page.locator('.actual-price');
   }
 
   private get pagination(): Locator {
-    return this.page.locator(".pager");
+    return this.page.locator('.pager');
   }
 
   private get paginationLinks(): Locator {
-    return this.page.locator(".pager a");
+    return this.page.locator('.pager a');
   }
 
   // Methods
@@ -619,7 +628,7 @@ export class SearchResultsPage extends BasePage {
   }
 
   async getSearchQuery(): Promise<string> {
-    return (await this.searchQuery.textContent()) || "";
+    return (await this.searchQuery.textContent()) || '';
   }
 
   async getProductPrices(): Promise<string[]> {
@@ -652,36 +661,37 @@ export class SearchResultsPage extends BasePage {
 ---
 
 ### 8. CategoryPage
+
 Product category browsing
 
 ```typescript
-import { Page, Locator } from "@playwright/test";
-import { BasePage } from "./basepage";
+import { Page, Locator } from '@playwright/test';
+import { BasePage } from './basepage';
 
 export class CategoryPage extends BasePage {
   // Selectors
   private get categoryTitle(): Locator {
-    return this.page.locator(".page-title h1");
+    return this.page.locator('.page-title h1');
   }
 
   private get productItems(): Locator {
-    return this.page.locator(".product-item");
+    return this.page.locator('.product-item');
   }
 
   private get sortDropdown(): Locator {
-    return this.page.locator("#product-sort-dropdown");
+    return this.page.locator('#product-sort-dropdown');
   }
 
   private get filterOptions(): Locator {
-    return this.page.locator(".filter-option");
+    return this.page.locator('.filter-option');
   }
 
   private get categoryBreadcrumb(): Locator {
-    return this.page.locator(".breadcrumb");
+    return this.page.locator('.breadcrumb');
   }
 
   private get noProductsMessage(): Locator {
-    return this.page.locator(".no-product");
+    return this.page.locator('.no-product');
   }
 
   // Methods
@@ -691,7 +701,7 @@ export class CategoryPage extends BasePage {
   }
 
   async getCategoryTitle(): Promise<string> {
-    return (await this.categoryTitle.textContent()) || "";
+    return (await this.categoryTitle.textContent()) || '';
   }
 
   async getProductCount(): Promise<number> {
@@ -700,7 +710,7 @@ export class CategoryPage extends BasePage {
 
   async sortBy(option: string): Promise<void> {
     await this.sortDropdown.selectOption(option);
-    await this.page.waitForLoadState("networkidle");
+    await this.page.waitForLoadState('networkidle');
   }
 
   async hasProducts(): Promise<boolean> {
@@ -728,16 +738,17 @@ export class CategoryPage extends BasePage {
 ---
 
 ### 9. AccountPage
+
 User account information and management
 
 ```typescript
-import { Page, Locator } from "@playwright/test";
-import { BasePage } from "./basepage";
+import { Page, Locator } from '@playwright/test';
+import { BasePage } from './basepage';
 
 export class AccountPage extends BasePage {
   // Selectors
   private get accountTitle(): Locator {
-    return this.page.locator(".page-title h1");
+    return this.page.locator('.page-title h1');
   }
 
   private get firstNameField(): Locator {
@@ -769,17 +780,17 @@ export class AccountPage extends BasePage {
   }
 
   private get successMessage(): Locator {
-    return this.page.locator(".success-notification");
+    return this.page.locator('.success-notification');
   }
 
   // Methods
   async navigateToAccount(): Promise<void> {
-    await this.navigateTo("/customer/info");
+    await this.navigateTo('/customer/info');
     await this.waitForPageLoad();
   }
 
   async getAccountTitle(): Promise<string> {
-    return (await this.accountTitle.textContent()) || "";
+    return (await this.accountTitle.textContent()) || '';
   }
 
   async updateFirstName(firstName: string): Promise<void> {
@@ -792,7 +803,7 @@ export class AccountPage extends BasePage {
 
   async saveAccountInfo(): Promise<void> {
     await this.saveButton.click();
-    await this.page.waitForLoadState("networkidle");
+    await this.page.waitForLoadState('networkidle');
   }
 
   async logout(): Promise<void> {
@@ -827,13 +838,13 @@ export class AccountPage extends BasePage {
 ### Example Test Using Page Objects
 
 ```typescript
-import { test, expect } from "@playwright/test";
-import { HomePage } from "../pages/homepage";
-import { LoginPage } from "../pages/loginpage";
-import { ProductPage } from "../pages/productpage";
-import { CartPage } from "../pages/cartpage";
+import { ProductPage } from '../pages/productpage';
+import { test, expect } from '@playwright/test';
+import { LoginPage } from '../pages/loginpage';
+import { HomePage } from '../pages/homepage';
+import { CartPage } from '../pages/cartpage';
 
-test.describe("Demo Web Shop E-commerce Tests", () => {
+test.describe('Demo Web Shop E-commerce Tests', () => {
   let homePage: HomePage;
   let loginPage: LoginPage;
   let productPage: ProductPage;
@@ -846,13 +857,13 @@ test.describe("Demo Web Shop E-commerce Tests", () => {
     cartPage = new CartPage(page);
   });
 
-  test("should complete product purchase flow", async () => {
+  test('should complete product purchase flow', async () => {
     // Navigate to home
     await homePage.navigateToHome();
     expect(await homePage.isHomepageLoaded()).toBeTruthy();
 
     // Search for product
-    await homePage.searchForProduct("Laptop");
+    await homePage.searchForProduct('Laptop');
 
     // Add product to cart
     await homePage.addProductToCart(0);
@@ -869,15 +880,15 @@ test.describe("Demo Web Shop E-commerce Tests", () => {
     await cartPage.proceedToCheckout();
   });
 
-  test("should login and view account", async () => {
+  test('should login and view account', async () => {
     await homePage.navigateToHome();
     await homePage.clickLogin();
 
-    await loginPage.login("test@example.com", "password123");
+    await loginPage.login('test@example.com', 'password123');
 
     // After login, navigate to account
     await homePage.clickMyAccount();
-    
+
     // Verify account page loaded
     expect(true).toBeTruthy(); // Account verification
   });

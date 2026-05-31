@@ -1,20 +1,24 @@
 ---
 name: Test Generation Orchestrator
 description: Main orchestrator for the complete test generation workflow
-tools: ["semantic_search", "read_file", "create_file", "run_in_terminal"]
-applyTo: ["orchestration", "test-workflow", "test-generation"]
+tools: ['semantic_search', 'read_file', 'create_file', 'run_in_terminal']
+applyTo: ['orchestration', 'test-workflow', 'test-generation']
 ---
 
 # Test Generation Orchestrator Agent
 
 ## Overview
+
 This is the main orchestrator agent that coordinates the entire workflow for:
+
 1. Fetching GitHub tickets (labeled: enhancement, bug)
 2. Processing test cases from Excel
 3. Creating page object models
 4. Generating .spec.ts test files
 5. Validating tests
 6. Creating merge requests
+
+> NOTE: This agent does not perform the work itself. It only orchestrates and delegates tasks to the other agents listed in this workflow.
 
 ## Workflow Steps
 
@@ -23,6 +27,7 @@ Follow these steps in sequence. Each step can be run individually via the corres
 ### **Phase 1: Discovery & Planning**
 
 #### Step 1️⃣ — Fetch GitHub Issues
+
 **Agent**: GitHub Ticket Fetcher
 **Goal**: Collect all open issues labeled 'enhancement' or 'bug'
 
@@ -38,6 +43,7 @@ Follow these steps in sequence. Each step can be run individually via the corres
 **Output**: Prioritized list of GitHub issues
 
 **Key Questions**:
+
 - Which issues should we focus on? (select 1-3)
 - Are there specific requirements in the issue description?
 - What's the priority order?
@@ -47,6 +53,7 @@ Follow these steps in sequence. Each step can be run individually via the corres
 ---
 
 #### Step 2️⃣ — Process Test Cases from Excel
+
 **Agent**: Test Case Processor
 **Goal**: Extract and filter test cases from testcases/automation_practice_testcases.xlsx
 
@@ -61,6 +68,7 @@ Follow these steps in sequence. Each step can be run individually via the corres
 ```
 
 **Filters Available**:
+
 - **Status**: Active, Draft, Deprecated, Completed
 - **Category**: Authentication, Dashboard, Forms, API, etc.
 - **GitHub Issue**: Link to specific issues if applicable
@@ -68,6 +76,7 @@ Follow these steps in sequence. Each step can be run individually via the corres
 **Output**: Structured test case data with page object mapping
 
 **Key Questions**:
+
 - Which status(es) should we include? (default: Active)
 - Which categories? (default: all)
 - How many test cases? (total X)
@@ -79,6 +88,7 @@ Follow these steps in sequence. Each step can be run individually via the corres
 ### **Phase 2: Code Generation**
 
 #### Step 3️⃣ — Generate Page Objects
+
 **Agent**: Page Object Generator
 **Goal**: Create new page object models in pages/ directory
 
@@ -92,12 +102,14 @@ Follow these steps in sequence. Each step can be run individually via the corres
 ```
 
 **Deliverables**:
+
 - New .ts files in `pages/` directory
 - All page selectors and methods
 - Proper TypeScript types
 - Following project code style
 
 **Example**: If test cases need login/dashboard functionality:
+
 - `pages/loginpage.ts`
 - `pages/dashboardpage.ts`
 
@@ -106,6 +118,7 @@ Follow these steps in sequence. Each step can be run individually via the corres
 ---
 
 #### Step 4️⃣ — Generate Test Specifications
+
 **Agent**: Spec Generator
 **Goal**: Create .spec.ts files in tests/ directory
 
@@ -120,12 +133,14 @@ Follow these steps in sequence. Each step can be run individually via the corres
 ```
 
 **Deliverables**:
+
 - New .spec.ts files in `tests/` directory
 - X total tests for Y features
 - Proper imports and structure
 - Clear test descriptions
 
 **Example**: If test cases for authentication:
+
 - `tests/login.spec.ts` - 5 tests
 - `tests/logout.spec.ts` - 2 tests
 
@@ -136,6 +151,7 @@ Follow these steps in sequence. Each step can be run individually via the corres
 ### **Phase 3: Validation & Deployment**
 
 #### Step 5️⃣ — Validate Tests
+
 **Agent**: Test Validator
 **Goal**: Run tests and ensure all pass
 
@@ -150,6 +166,7 @@ Follow these steps in sequence. Each step can be run individually via the corres
 ```
 
 **Expected Results**:
+
 ```
 Total Tests: X
 Passed: X ✓
@@ -160,6 +177,7 @@ Status: ✓ READY FOR MR
 ```
 
 **If Failures Occur**:
+
 - Agent provides failure analysis
 - Suggests root cause
 - Recommends fixes (selector, timing, logic)
@@ -170,6 +188,7 @@ Status: ✓ READY FOR MR
 ---
 
 #### Step 6️⃣ — Create Merge Request
+
 **Agent**: Merge Request Creator
 **Goal**: Create GitHub PR targeting master branch
 
@@ -184,8 +203,9 @@ Status: ✓ READY FOR MR
 ```
 
 **MR Details**:
+
 - **Base Branch**: master
-- **Feature Branch**: add_tests_<ticket_id>
+- **Feature Branch**: add*tests*<ticket_id>
 - **Title**: feat: Add tests for [feature] (#issue_id)
 - **Description**: Includes test count, page objects, coverage areas
 - **Status**: Links to all related GitHub issues
@@ -206,7 +226,7 @@ Status: ✓ READY FOR MR
 # Select issues to work on
 
 # 2. Continue with Step 2
-# Ask: "Run Test Case Processor"  
+# Ask: "Run Test Case Processor"
 # Filter test cases
 
 # 3. Generate code (Steps 3-4)
@@ -238,12 +258,14 @@ Each agent can be invoked independently. Reference the individual agent files:
 ## Configuration Reference
 
 ### GitHub Integration
+
 - **Repository**: RobertPecz/PlaywrightPetProject
 - **Authentication**: GitHub PAT in `pat.txt`
 - **Issue Filters**: Labels: enhancement, bug | State: open
 - **MR Target**: master branch
 
 ### Test Sources
+
 - **GitHub Issues**: API endpoint: `api.github.com/repos/.../issues`
 - **Excel Test Cases**: `testcases/automation_practice_testcases.xlsx`
 - **Default Filters**:
@@ -252,6 +274,7 @@ Each agent can be invoked independently. Reference the individual agent files:
   - Labels to process: enhancement, bug
 
 ### Project Structure
+
 ```
 pages/               # Page object models
   loginpage.ts       # Existing example
@@ -269,6 +292,7 @@ tests/               # Test specifications
 ```
 
 ### Code Conventions
+
 - **Page Objects**: PascalCase class names, lowercase filenames
 - **Test Specs**: camelCase test names, kebab-case file names
 - **Methods**: camelCase for methods and properties
@@ -280,26 +304,34 @@ tests/               # Test specifications
 ## Troubleshooting
 
 ### Issue: GitHub API Rate Limited
-**Solution**: 
+
+**Solution**:
+
 - Use authentication (GitHub PAT)
 - Cache results for 1 hour
 - Reduced endpoints: 5000 req/hr with auth
 
 ### Issue: Excel File Not Found
+
 **Solution**:
+
 - Verify file path: `testcases/automation_practice_testcases.xlsx`
 - Check file is readable
 - Confirm Excel format (.xlsx)
 
 ### Issue: Test Failures
+
 **Solution**:
+
 1. Agent provides failure details
 2. Review error message (selector, assertion, timeout)
 3. Update page object or test spec
 4. Re-run validation
 
 ### Issue: Merge Conflict on Master
+
 **Solution**:
+
 - Pull latest master: `git pull origin master`
 - Rebase feature branch: `git rebase origin/master`
 - Resolve conflicts manually if needed
@@ -332,6 +364,7 @@ npm run build --help
 ## Success Criteria
 
 Workflow is successful when:
+
 - ✓ All GitHub issues processed and selected
 - ✓ All test cases extracted and organized
 - ✓ All page objects created
@@ -359,4 +392,3 @@ Workflow is successful when:
 - **GitHub API**: https://docs.github.com/en/rest
 - **Project README**: README.md
 - **Refactoring Notes**: REFACTORING_NOTES.md
-

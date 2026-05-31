@@ -1,26 +1,33 @@
 ---
 name: Merge Request Creator
 description: Create merge request on GitHub with test results
-tools: ["run_in_terminal"]
-applyTo: ["merge-request-creation", "github-integration"]
+tools: ['run_in_terminal']
+applyTo: ['merge-request-creation', 'github-integration']
 ---
 
 # Merge Request Creator Agent
 
 ## Purpose
+
 Create a merge request on GitHub targeting the `master` branch with all test implementation details.
+
+> NOTE: This agent is intended to be invoked only by `.github/agents/orchestrator.agent.md`. It does not make workflow decisions or call other agents.
 
 ## Instructions
 
 ### Step 1: Pre-MR Validation
+
 Confirm readiness:
+
 - [ ] All tests pass (from Test Validator)
 - [ ] No uncommitted changes
 - [ ] Current branch: `add_tests_<feature>` or similar
 - [ ] Feature branch created from latest master
 
 ### Step 2: Prepare Git Branch
+
 If not already done:
+
 ```bash
 # Create feature branch for tests
 git checkout -b add_tests_<ticket_id>
@@ -30,11 +37,13 @@ git branch -a
 ```
 
 **Branch Naming Convention**:
+
 - Format: `add_tests_<ticket_id>` or `add_tests_<feature_name>`
 - Example: `add_tests_42` for GitHub issue #42
 - Example: `add_tests_checkout_flow`
 
 ### Step 3: Stage and Commit Changes
+
 ```bash
 # Stage all new/modified test files
 git add tests/
@@ -51,11 +60,13 @@ git commit -m "feat: Add tests for [feature name] (fixes #<issue_id>)
 ```
 
 **Commit Message Format**:
+
 - Type: feat, fix, test, docs, etc.
 - Issue reference: Fixes #<issue_id> or Closes #<issue_id>
 - Detailed description of changes
 
 ### Step 4: Push Branch
+
 ```bash
 # Push feature branch
 git push origin add_tests_<ticket_id>
@@ -65,13 +76,16 @@ git branch -vv
 ```
 
 ### Step 5: Generate MR Description
+
 Prepare comprehensive merge request description:
 
-```markdown
+````markdown
 ## Description
+
 This MR implements tests for [Feature Name] based on GitHub issue #<issue_id>.
 
 ## Changes
+
 - **Page Objects Created**: [list new pages with brief description]
   - pages/loginpage.ts - Login form interactions
   - pages/dashboardpage.ts - Dashboard verification methods
@@ -86,22 +100,27 @@ This MR implements tests for [Feature Name] based on GitHub issue #<issue_id>.
   - [Other categories]: N tests
 
 ## Test Results
+
 ✓ All tests passing (X/X)
+
 - No failures
 - No skipped tests
 - Average test duration: Xs per test
 
 ## Related Issues
+
 Fixes #<issue_id>
 Related: [other related issue numbers if any]
 
 ## Test Coverage
+
 - Login scenarios: covered
 - Error handling: covered
 - Edge cases: covered
 - [Other relevant areas]
 
 ## Checklist
+
 - [x] All tests passing
 - [x] Page objects follow project conventions
 - [x] Test specs follow project patterns
@@ -110,18 +129,22 @@ Related: [other related issue numbers if any]
 - [x] Related GitHub issue(s) referenced
 
 ## Testing Instructions
+
 ```bash
 npm test -- tests/login.spec.ts
 npm test -- tests/dashboard.spec.ts
 npm test  # Run all tests
 ```
+````
 
 ## Additional Notes
+
 - Selectors verified against actual UI elements
 - Timeouts adjusted for stable execution
 - Page objects follow existing project patterns
 - Fixtures compatible with current setup
-```
+
+````
 
 ### Step 6: Create Merge Request via GitHub Web
 Option A: **Using GitHub CLI** (if installed):
@@ -131,9 +154,10 @@ gh pr create --title "feat: Add tests for [feature]" \
   --body "Description here..." \
   --base master \
   --head add_tests_<ticket_id>
-```
+````
 
 Option B: **Manual via GitHub Web**:
+
 1. Go to: `https://github.com/RobertPecz/PlaywrightPetProject`
 2. Click "Pull requests" tab
 3. Click "New pull request"
@@ -146,14 +170,18 @@ Option B: **Manual via GitHub Web**:
 6. Click "Create pull request"
 
 ### Step 7: Add Labels & Assignment (Optional)
+
 In the GitHub PR interface:
+
 - Add labels: `tests`, `automation`, `[feature-label]`
 - Link related issues: Add issue reference
 - Request reviewers (if team process)
 - Add to project board (if used)
 
 ### Step 8: Verification
+
 After MR creation:
+
 - [ ] MR shows up in repository PR list
 - [ ] Base branch is `master`
 - [ ] All commits visible in MR
@@ -163,6 +191,7 @@ After MR creation:
 - [ ] Diff looks correct
 
 ### Step 9: Monitor MR Status
+
 - Check CI/CD pipeline results
 - Address any automated checks/reviews
 - Be available for code review feedback
@@ -171,6 +200,7 @@ After MR creation:
 ## MR Checklist
 
 Before finalizing:
+
 - [ ] Branch name follows convention
 - [ ] All test files included
 - [ ] Page object files included
@@ -214,12 +244,14 @@ gh pr view add_tests_42 --web
 ```
 
 ## Output
+
 - GitHub Merge Request created
 - MR URL for reference
 - Summary of changes and test results
 - Ready for: Code review and merge
 
 ## Notes
+
 - Ensure no conflicts with master branch
 - Keep MR focused on test implementation
 - Reference related issues clearly

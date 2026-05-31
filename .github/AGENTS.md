@@ -5,14 +5,18 @@ This file defines custom agents for automating test creation, GitHub ticket proc
 ---
 
 ## Agent: Test Generator Orchestrator
-**Purpose**: Main orchestrator that guides the workflow for creating tests from GitHub tickets and test cases.
+
+**Purpose**: Main orchestrator that guides the workflow for creating tests from GitHub tickets and test cases for the Tricentis Demo Web Shop.
+
+**Application**: https://demowebshop.tricentis.com/ (nopCommerce E-commerce Platform)
 
 **Trigger**: Manual invocation or GitHub workflow
 
 **Responsibilities**:
+
 1. Coordinate ticket fetching from GitHub
 2. Filter and process Excel test cases
-3. Generate page object models
+3. Generate page object models (with Demo Web Shop templates)
 4. Generate .spec.ts test files
 5. Validate and run tests
 6. Prepare merge request
@@ -20,15 +24,18 @@ This file defines custom agents for automating test creation, GitHub ticket proc
 ---
 
 ## Agent: GitHub Ticket Fetcher
+
 **Purpose**: Fetch and filter GitHub issues from the repository.
 
 **Responsibilities**:
+
 - Connect to GitHub API
 - Fetch issues labeled 'enhancement' or 'bug'
 - Format ticket data for test generation
 - Track issue relationships
 
 **Configuration**:
+
 - Labels: enhancement, bug
 - State: open
 - Sort: updated, desc
@@ -36,9 +43,11 @@ This file defines custom agents for automating test creation, GitHub ticket proc
 ---
 
 ## Agent: Test Case Processor
+
 **Purpose**: Read, parse, and filter test cases from Excel file.
 
 **Responsibilities**:
+
 - Parse testcases/automation_practice_testcases.xlsx
 - Filter by status/category
 - Map test cases to domains/features
@@ -50,22 +59,42 @@ This file defines custom agents for automating test creation, GitHub ticket proc
 ---
 
 ## Agent: Page Object Generator
-**Purpose**: Create new page object models based on test case requirements.
+
+**Purpose**: Create new page object models based on test case requirements for the Demo Web Shop application.
+
+**Application**: Tricentis Demo Web Shop (https://demowebshop.tricentis.com/)
 
 **Responsibilities**:
+
 - Analyze test cases to identify required pages/components
-- Generate page objects in pages/ directory
-- Create selectors and methods for page interactions
+- Use Demo Web Shop page object templates as reference
+- Generate page objects in pages/ directory with proper selectors
+- Create methods for page interactions (login, search, cart, checkout, etc.)
 - Follow existing project patterns (pages/mainpage.ts, pages/registerpage.ts)
+- Reference selectors from APPLICATION.md and demo-web-shop-pagobjects.agent.md
+
+**Available Templates**:
+
+- BasePage (foundation for all pages)
+- HomePage (main landing page)
+- LoginPage (authentication)
+- RegisterPage (user registration)
+- ProductPage (product details)
+- CartPage (shopping cart)
+- SearchResultsPage (search)
+- CategoryPage (product categories)
+- AccountPage (user account)
 
 **Output Location**: pages/
 
 ---
 
 ## Agent: Spec Generator
+
 **Purpose**: Generate Playwright test specification files.
 
 **Responsibilities**:
+
 - Create .spec.ts files in tests/ directory
 - Import required page objects
 - Generate test cases from specifications
@@ -77,9 +106,11 @@ This file defines custom agents for automating test creation, GitHub ticket proc
 ---
 
 ## Agent: Test Validator
+
 **Purpose**: Run tests and validate implementation.
 
 **Responsibilities**:
+
 - Execute test suite: `npm test`
 - Validate all tests pass
 - Generate test report
@@ -88,9 +119,11 @@ This file defines custom agents for automating test creation, GitHub ticket proc
 ---
 
 ## Agent: Merge Request Creator
+
 **Purpose**: Create merge request on GitHub/GitLab.
 
 **Responsibilities**:
+
 - Target branch: master
 - Generate PR description from ticket and test info
 - Link related GitHub issues
@@ -148,9 +181,23 @@ To trigger the test generation workflow:
 
 ## Configuration Files
 
-- Agent definitions: `.github/AGENTS.md`
+- Agent definitions: `.github/AGENTS.md` (this file)
 - Individual agent prompts: `.github/agents/*.agent.md`
+- Application reference: `.github/APPLICATION.md` (Demo Web Shop details)
+- Demo Web Shop page objects: `.github/agents/demo-web-shop-pagobjects.agent.md`
 - GitHub workflows: `.github/workflows/`
+
+## Application Under Test
+
+**Demo Web Shop**: https://demowebshop.tricentis.com/
+
+- **Type**: nopCommerce E-commerce Platform
+- **Features**: Product browsing, search, user registration/login, shopping cart, checkout
+- **Test Scenarios**: Authentication, shopping, cart management, product search, account management
+- **Documentation**: See `.github/APPLICATION.md` for complete reference
+- **Page Objects**: See `.github/agents/demo-web-shop-pagobjects.agent.md` for templates
+
+---
 
 ## Notes
 
@@ -158,3 +205,6 @@ To trigger the test generation workflow:
 - Excel file must contain columns: test_id, title, description, status, category
 - Page objects follow pattern: class with page locators and interaction methods
 - Test specs follow pattern: describe blocks with test cases
+- All tests run against: https://demowebshop.tricentis.com/
+- Page object templates available in demo-web-shop-pagobjects.agent.md
+- Use Application.md for selector reference and page element details
