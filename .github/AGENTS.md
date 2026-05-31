@@ -5,18 +5,28 @@ This file defines custom agents for automating test creation, GitHub ticket proc
 ---
 
 ## Agent: Test Generator Orchestrator
+<<<<<<< HEAD
 
 **Purpose**: Main orchestrator that guides the workflow for creating tests from GitHub tickets and test cases for the Tricentis Demo Web Shop.
 
 **Application**: https://demowebshop.tricentis.com/ (nopCommerce E-commerce Platform)
+=======
+**Purpose**: Main orchestrator that guides the workflow for creating tests from GitHub tickets and test cases.
+>>>>>>> 4475e1c (feat: Extend agents with Demo Web Shop application reference)
 
 **Trigger**: Manual invocation or GitHub workflow
 
 **Responsibilities**:
+<<<<<<< HEAD
 
 1. Coordinate ticket fetching from GitHub
 2. Filter and process Excel test cases
 3. Generate page object models (with Demo Web Shop templates)
+=======
+1. Coordinate ticket fetching from GitHub
+2. Filter and process Excel test cases
+3. Generate page object models
+>>>>>>> 4475e1c (feat: Extend agents with Demo Web Shop application reference)
 4. Generate .spec.ts test files
 5. Validate and run tests
 6. Prepare merge request
@@ -24,18 +34,27 @@ This file defines custom agents for automating test creation, GitHub ticket proc
 ---
 
 ## Agent: GitHub Ticket Fetcher
+<<<<<<< HEAD
 
 **Purpose**: Fetch and filter GitHub issues from the repository.
 
 **Responsibilities**:
 
+=======
+**Purpose**: Fetch and filter GitHub issues from the repository.
+
+**Responsibilities**:
+>>>>>>> 4475e1c (feat: Extend agents with Demo Web Shop application reference)
 - Connect to GitHub API
 - Fetch issues labeled 'enhancement' or 'bug'
 - Format ticket data for test generation
 - Track issue relationships
 
 **Configuration**:
+<<<<<<< HEAD
 
+=======
+>>>>>>> 4475e1c (feat: Extend agents with Demo Web Shop application reference)
 - Labels: enhancement, bug
 - State: open
 - Sort: updated, desc
@@ -43,11 +62,17 @@ This file defines custom agents for automating test creation, GitHub ticket proc
 ---
 
 ## Agent: Test Case Processor
+<<<<<<< HEAD
 
 **Purpose**: Read, parse, and filter test cases from Excel file.
 
 **Responsibilities**:
 
+=======
+**Purpose**: Read, parse, and filter test cases from Excel file.
+
+**Responsibilities**:
+>>>>>>> 4475e1c (feat: Extend agents with Demo Web Shop application reference)
 - Parse testcases/automation_practice_testcases.xlsx
 - Filter by status/category
 - Map test cases to domains/features
@@ -59,6 +84,7 @@ This file defines custom agents for automating test creation, GitHub ticket proc
 ---
 
 ## Agent: Page Object Generator
+<<<<<<< HEAD
 
 **Purpose**: Create new page object models based on test case requirements for the Demo Web Shop application.
 
@@ -84,17 +110,32 @@ This file defines custom agents for automating test creation, GitHub ticket proc
 - SearchResultsPage (search)
 - CategoryPage (product categories)
 - AccountPage (user account)
+=======
+**Purpose**: Create new page object models based on test case requirements.
+
+**Responsibilities**:
+- Analyze test cases to identify required pages/components
+- Generate page objects in pages/ directory
+- Create selectors and methods for page interactions
+- Follow existing project patterns (pages/mainpage.ts, pages/registerpage.ts)
+>>>>>>> 4475e1c (feat: Extend agents with Demo Web Shop application reference)
 
 **Output Location**: pages/
 
 ---
 
 ## Agent: Spec Generator
+<<<<<<< HEAD
 
 **Purpose**: Generate Playwright test specification files.
 
 **Responsibilities**:
 
+=======
+**Purpose**: Generate Playwright test specification files.
+
+**Responsibilities**:
+>>>>>>> 4475e1c (feat: Extend agents with Demo Web Shop application reference)
 - Create .spec.ts files in tests/ directory
 - Import required page objects
 - Generate test cases from specifications
@@ -106,11 +147,17 @@ This file defines custom agents for automating test creation, GitHub ticket proc
 ---
 
 ## Agent: Test Validator
+<<<<<<< HEAD
 
 **Purpose**: Run tests and validate implementation.
 
 **Responsibilities**:
 
+=======
+**Purpose**: Run tests and validate implementation.
+
+**Responsibilities**:
+>>>>>>> 4475e1c (feat: Extend agents with Demo Web Shop application reference)
 - Execute test suite: `npm test`
 - Validate all tests pass
 - Generate test report
@@ -119,11 +166,17 @@ This file defines custom agents for automating test creation, GitHub ticket proc
 ---
 
 ## Agent: Merge Request Creator
+<<<<<<< HEAD
 
 **Purpose**: Create merge request on GitHub/GitLab.
 
 **Responsibilities**:
 
+=======
+**Purpose**: Create merge request on GitHub/GitLab.
+
+**Responsibilities**:
+>>>>>>> 4475e1c (feat: Extend agents with Demo Web Shop application reference)
 - Target branch: master
 - Generate PR description from ticket and test info
 - Link related GitHub issues
@@ -181,6 +234,7 @@ To trigger the test generation workflow:
 
 ## Configuration Files
 
+<<<<<<< HEAD
 - Agent definitions: `.github/AGENTS.md` (this file)
 - Individual agent prompts: `.github/agents/*.agent.md`
 - Application reference: `.github/APPLICATION.md` (Demo Web Shop details)
@@ -199,12 +253,21 @@ To trigger the test generation workflow:
 
 ---
 
+=======
+- Agent definitions: `.github/AGENTS.md`
+- Individual agent prompts: `.github/agents/*.agent.md`
+- GitHub workflows: `.github/workflows/`
+
+>>>>>>> 4475e1c (feat: Extend agents with Demo Web Shop application reference)
 ## Notes
 
 - GitHub PAT required for API access (stored in `pat.txt`)
 - Excel file must contain columns: test_id, title, description, status, category
 - Page objects follow pattern: class with page locators and interaction methods
 - Test specs follow pattern: describe blocks with test cases
+<<<<<<< HEAD
 - All tests run against: https://demowebshop.tricentis.com/
 - Page object templates available in demo-web-shop-pagobjects.agent.md
 - Use Application.md for selector reference and page element details
+=======
+>>>>>>> 4475e1c (feat: Extend agents with Demo Web Shop application reference)

@@ -1,6 +1,7 @@
 ---
 name: Test Generation Orchestrator
 description: Main orchestrator for the complete test generation workflow
+<<<<<<< HEAD
 tools:
   [
     vscode/installExtension,
@@ -92,14 +93,22 @@ tools:
     github/update_pull_request_branch,
   ]
 applyTo: ['orchestration', 'test-workflow', 'test-generation']
+=======
+tools: ["semantic_search", "read_file", "create_file", "run_in_terminal"]
+applyTo: ["orchestration", "test-workflow", "test-generation"]
+>>>>>>> 4475e1c (feat: Extend agents with Demo Web Shop application reference)
 ---
 
 # Test Generation Orchestrator Agent
 
 ## Overview
+<<<<<<< HEAD
 
 This is the main orchestrator agent that coordinates the entire workflow for:
 
+=======
+This is the main orchestrator agent that coordinates the entire workflow for:
+>>>>>>> 4475e1c (feat: Extend agents with Demo Web Shop application reference)
 1. Fetching GitHub tickets (labeled: enhancement, bug)
 2. Processing test cases from Excel
 3. Creating page object models
@@ -107,10 +116,13 @@ This is the main orchestrator agent that coordinates the entire workflow for:
 5. Validating tests
 6. Creating merge requests
 
+<<<<<<< HEAD
 > NOTE: This agent does not perform the work itself. It only orchestrates and delegates tasks to the hidden worker agents in `.github/agents/internal/`.
 >
 > The actual code implementation and file modifications must be done by the internal agents, not by this orchestrator directly.
 
+=======
+>>>>>>> 4475e1c (feat: Extend agents with Demo Web Shop application reference)
 ## Workflow Steps
 
 Follow these steps in sequence. Each step can be run individually via the corresponding agent, but this orchestrator ensures proper sequencing.
@@ -118,7 +130,10 @@ Follow these steps in sequence. Each step can be run individually via the corres
 ### **Phase 1: Discovery & Planning**
 
 #### Step 1️⃣ — Fetch GitHub Issues
+<<<<<<< HEAD
 
+=======
+>>>>>>> 4475e1c (feat: Extend agents with Demo Web Shop application reference)
 **Agent**: GitHub Ticket Fetcher
 **Goal**: Collect all open issues labeled 'enhancement' or 'bug'
 
@@ -134,7 +149,10 @@ Follow these steps in sequence. Each step can be run individually via the corres
 **Output**: Prioritized list of GitHub issues
 
 **Key Questions**:
+<<<<<<< HEAD
 
+=======
+>>>>>>> 4475e1c (feat: Extend agents with Demo Web Shop application reference)
 - Which issues should we focus on? (select 1-3)
 - Are there specific requirements in the issue description?
 - What's the priority order?
@@ -144,7 +162,10 @@ Follow these steps in sequence. Each step can be run individually via the corres
 ---
 
 #### Step 2️⃣ — Process Test Cases from Excel
+<<<<<<< HEAD
 
+=======
+>>>>>>> 4475e1c (feat: Extend agents with Demo Web Shop application reference)
 **Agent**: Test Case Processor
 **Goal**: Extract and filter test cases from testcases/automation_practice_testcases.xlsx
 
@@ -159,7 +180,10 @@ Follow these steps in sequence. Each step can be run individually via the corres
 ```
 
 **Filters Available**:
+<<<<<<< HEAD
 
+=======
+>>>>>>> 4475e1c (feat: Extend agents with Demo Web Shop application reference)
 - **Status**: Active, Draft, Deprecated, Completed
 - **Category**: Authentication, Dashboard, Forms, API, etc.
 - **GitHub Issue**: Link to specific issues if applicable
@@ -167,7 +191,10 @@ Follow these steps in sequence. Each step can be run individually via the corres
 **Output**: Structured test case data with page object mapping
 
 **Key Questions**:
+<<<<<<< HEAD
 
+=======
+>>>>>>> 4475e1c (feat: Extend agents with Demo Web Shop application reference)
 - Which status(es) should we include? (default: Active)
 - Which categories? (default: all)
 - How many test cases? (total X)
@@ -179,7 +206,10 @@ Follow these steps in sequence. Each step can be run individually via the corres
 ### **Phase 2: Code Generation**
 
 #### Step 3️⃣ — Generate Page Objects
+<<<<<<< HEAD
 
+=======
+>>>>>>> 4475e1c (feat: Extend agents with Demo Web Shop application reference)
 **Agent**: Page Object Generator
 **Goal**: Create new page object models in pages/ directory
 
@@ -193,14 +223,20 @@ Follow these steps in sequence. Each step can be run individually via the corres
 ```
 
 **Deliverables**:
+<<<<<<< HEAD
 
+=======
+>>>>>>> 4475e1c (feat: Extend agents with Demo Web Shop application reference)
 - New .ts files in `pages/` directory
 - All page selectors and methods
 - Proper TypeScript types
 - Following project code style
 
 **Example**: If test cases need login/dashboard functionality:
+<<<<<<< HEAD
 
+=======
+>>>>>>> 4475e1c (feat: Extend agents with Demo Web Shop application reference)
 - `pages/loginpage.ts`
 - `pages/dashboardpage.ts`
 
@@ -209,7 +245,10 @@ Follow these steps in sequence. Each step can be run individually via the corres
 ---
 
 #### Step 4️⃣ — Generate Test Specifications
+<<<<<<< HEAD
 
+=======
+>>>>>>> 4475e1c (feat: Extend agents with Demo Web Shop application reference)
 **Agent**: Spec Generator
 **Goal**: Create .spec.ts files in tests/ directory
 
@@ -224,14 +263,20 @@ Follow these steps in sequence. Each step can be run individually via the corres
 ```
 
 **Deliverables**:
+<<<<<<< HEAD
 
+=======
+>>>>>>> 4475e1c (feat: Extend agents with Demo Web Shop application reference)
 - New .spec.ts files in `tests/` directory
 - X total tests for Y features
 - Proper imports and structure
 - Clear test descriptions
 
 **Example**: If test cases for authentication:
+<<<<<<< HEAD
 
+=======
+>>>>>>> 4475e1c (feat: Extend agents with Demo Web Shop application reference)
 - `tests/login.spec.ts` - 5 tests
 - `tests/logout.spec.ts` - 2 tests
 
@@ -242,7 +287,10 @@ Follow these steps in sequence. Each step can be run individually via the corres
 ### **Phase 3: Validation & Deployment**
 
 #### Step 5️⃣ — Validate Tests
+<<<<<<< HEAD
 
+=======
+>>>>>>> 4475e1c (feat: Extend agents with Demo Web Shop application reference)
 **Agent**: Test Validator
 **Goal**: Run tests and ensure all pass
 
@@ -257,7 +305,10 @@ Follow these steps in sequence. Each step can be run individually via the corres
 ```
 
 **Expected Results**:
+<<<<<<< HEAD
 
+=======
+>>>>>>> 4475e1c (feat: Extend agents with Demo Web Shop application reference)
 ```
 Total Tests: X
 Passed: X ✓
@@ -268,7 +319,10 @@ Status: ✓ READY FOR MR
 ```
 
 **If Failures Occur**:
+<<<<<<< HEAD
 
+=======
+>>>>>>> 4475e1c (feat: Extend agents with Demo Web Shop application reference)
 - Agent provides failure analysis
 - Suggests root cause
 - Recommends fixes (selector, timing, logic)
@@ -279,7 +333,10 @@ Status: ✓ READY FOR MR
 ---
 
 #### Step 6️⃣ — Create Merge Request
+<<<<<<< HEAD
 
+=======
+>>>>>>> 4475e1c (feat: Extend agents with Demo Web Shop application reference)
 **Agent**: Merge Request Creator
 **Goal**: Create GitHub PR targeting master branch
 
@@ -294,9 +351,14 @@ Status: ✓ READY FOR MR
 ```
 
 **MR Details**:
+<<<<<<< HEAD
 
 - **Base Branch**: master
 - **Feature Branch**: add*tests*<ticket_id>
+=======
+- **Base Branch**: master
+- **Feature Branch**: add_tests_<ticket_id>
+>>>>>>> 4475e1c (feat: Extend agents with Demo Web Shop application reference)
 - **Title**: feat: Add tests for [feature] (#issue_id)
 - **Description**: Includes test count, page objects, coverage areas
 - **Status**: Links to all related GitHub issues
@@ -317,7 +379,11 @@ Status: ✓ READY FOR MR
 # Select issues to work on
 
 # 2. Continue with Step 2
+<<<<<<< HEAD
 # Ask: "Run Test Case Processor"
+=======
+# Ask: "Run Test Case Processor"  
+>>>>>>> 4475e1c (feat: Extend agents with Demo Web Shop application reference)
 # Filter test cases
 
 # 3. Generate code (Steps 3-4)
@@ -349,14 +415,20 @@ Each agent can be invoked independently. Reference the individual agent files:
 ## Configuration Reference
 
 ### GitHub Integration
+<<<<<<< HEAD
 
+=======
+>>>>>>> 4475e1c (feat: Extend agents with Demo Web Shop application reference)
 - **Repository**: RobertPecz/PlaywrightPetProject
 - **Authentication**: GitHub PAT in `pat.txt`
 - **Issue Filters**: Labels: enhancement, bug | State: open
 - **MR Target**: master branch
 
 ### Test Sources
+<<<<<<< HEAD
 
+=======
+>>>>>>> 4475e1c (feat: Extend agents with Demo Web Shop application reference)
 - **GitHub Issues**: API endpoint: `api.github.com/repos/.../issues`
 - **Excel Test Cases**: `testcases/automation_practice_testcases.xlsx`
 - **Default Filters**:
@@ -365,7 +437,10 @@ Each agent can be invoked independently. Reference the individual agent files:
   - Labels to process: enhancement, bug
 
 ### Project Structure
+<<<<<<< HEAD
 
+=======
+>>>>>>> 4475e1c (feat: Extend agents with Demo Web Shop application reference)
 ```
 pages/               # Page object models
   loginpage.ts       # Existing example
@@ -383,7 +458,10 @@ tests/               # Test specifications
 ```
 
 ### Code Conventions
+<<<<<<< HEAD
 
+=======
+>>>>>>> 4475e1c (feat: Extend agents with Demo Web Shop application reference)
 - **Page Objects**: PascalCase class names, lowercase filenames
 - **Test Specs**: camelCase test names, kebab-case file names
 - **Methods**: camelCase for methods and properties
@@ -395,34 +473,50 @@ tests/               # Test specifications
 ## Troubleshooting
 
 ### Issue: GitHub API Rate Limited
+<<<<<<< HEAD
 
 **Solution**:
 
+=======
+**Solution**: 
+>>>>>>> 4475e1c (feat: Extend agents with Demo Web Shop application reference)
 - Use authentication (GitHub PAT)
 - Cache results for 1 hour
 - Reduced endpoints: 5000 req/hr with auth
 
 ### Issue: Excel File Not Found
+<<<<<<< HEAD
 
 **Solution**:
 
+=======
+**Solution**:
+>>>>>>> 4475e1c (feat: Extend agents with Demo Web Shop application reference)
 - Verify file path: `testcases/automation_practice_testcases.xlsx`
 - Check file is readable
 - Confirm Excel format (.xlsx)
 
 ### Issue: Test Failures
+<<<<<<< HEAD
 
 **Solution**:
 
+=======
+**Solution**:
+>>>>>>> 4475e1c (feat: Extend agents with Demo Web Shop application reference)
 1. Agent provides failure details
 2. Review error message (selector, assertion, timeout)
 3. Update page object or test spec
 4. Re-run validation
 
 ### Issue: Merge Conflict on Master
+<<<<<<< HEAD
 
 **Solution**:
 
+=======
+**Solution**:
+>>>>>>> 4475e1c (feat: Extend agents with Demo Web Shop application reference)
 - Pull latest master: `git pull origin master`
 - Rebase feature branch: `git rebase origin/master`
 - Resolve conflicts manually if needed
@@ -455,7 +549,10 @@ npm run build --help
 ## Success Criteria
 
 Workflow is successful when:
+<<<<<<< HEAD
 
+=======
+>>>>>>> 4475e1c (feat: Extend agents with Demo Web Shop application reference)
 - ✓ All GitHub issues processed and selected
 - ✓ All test cases extracted and organized
 - ✓ All page objects created
@@ -483,3 +580,7 @@ Workflow is successful when:
 - **GitHub API**: https://docs.github.com/en/rest
 - **Project README**: README.md
 - **Refactoring Notes**: REFACTORING_NOTES.md
+<<<<<<< HEAD
+=======
+
+>>>>>>> 4475e1c (feat: Extend agents with Demo Web Shop application reference)
