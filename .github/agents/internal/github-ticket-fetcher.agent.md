@@ -1,7 +1,8 @@
 ---
 name: GitHub Ticket Fetcher
 description: Fetch and filter GitHub issues from RobertPecz/PlaywrightPetProject
-tools: ['fetch_webpage', 'grep_search']
+hidden: true
+tools: ['fetch_webpage', 'grep_search', 'read_file']
 applyTo: ['github-issue-processing', 'ticket-fetching']
 ---
 
@@ -80,6 +81,10 @@ Show the fetched issues and ask:
 
 - List of selected GitHub issues with details
 - Ready for next step: Test Case Processor
+
+## Implementation
+
+This worker agent must perform the actual issue fetch and output structured results. It should not modify repository files. Use the GitHub API with the token in `pat.txt`, filter open issues by `enhancement` or `bug`, and produce the final prioritized list.
 
 ## Notes
 

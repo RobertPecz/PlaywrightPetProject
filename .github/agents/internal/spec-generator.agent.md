@@ -1,7 +1,8 @@
 ---
 name: Spec Generator
 description: Generate Playwright .spec.ts test files from test cases
-tools: ['create_file', 'read_file']
+hidden: true
+tools: ['create_file', 'read_file', 'run_in_terminal']
 applyTo: ['test-spec-generation', 'test-creation']
 ---
 
@@ -183,6 +184,10 @@ test.describe('Login Feature Tests', () => {
 - New .spec.ts files in `tests/` directory
 - Summary of created test files and test count
 - Ready for: Test Validator
+
+## Implementation
+
+This worker agent must create real Playwright test spec files in `tests/` based on structured test cases and available page objects. It should implement each case using the repository’s existing patterns, add meaningful assertions, and persist the files.
 
 ## Notes
 

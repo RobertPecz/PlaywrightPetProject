@@ -1,7 +1,8 @@
 ---
 name: Test Validator
 description: Run and validate generated tests
-tools: ['run_in_terminal']
+hidden: true
+tools: ['run_in_terminal', 'read_file']
 applyTo: ['test-validation', 'quality-assurance']
 ---
 
@@ -172,6 +173,10 @@ Tests should meet:
 - List of any failures (with remediation info)
 - Test coverage summary (if available)
 - Ready for: Merge Request Creator (if all pass)
+
+## Implementation
+
+This worker agent must execute the generated tests using the repository’s Playwright setup. It should install browsers if needed, run `npm test` or `npx playwright test`, analyze failures, and provide actionable remediation details.
 
 ## Notes
 

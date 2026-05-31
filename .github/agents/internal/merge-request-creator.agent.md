@@ -1,7 +1,8 @@
 ---
 name: Merge Request Creator
 description: Create merge request on GitHub with test results
-tools: ['run_in_terminal']
+hidden: true
+tools: ['run_in_terminal', 'read_file']
 applyTo: ['merge-request-creation', 'github-integration']
 ---
 
@@ -249,6 +250,10 @@ gh pr view add_tests_42 --web
 - MR URL for reference
 - Summary of changes and test results
 - Ready for: Code review and merge
+
+## Implementation
+
+This worker agent must create the actual feature branch, commit the repository changes, push to GitHub, and generate the merge request. When available, use `gh pr create`; otherwise prepare the branch and commit so the user can manually open the PR.
 
 ## Notes
 

@@ -1,7 +1,8 @@
 ---
 name: Demo Web Shop Page Objects
 description: Pre-built page object templates for Tricentis Demo Web Shop testing
-tools: ['create_file']
+hidden: true
+tools: ['create_file', 'read_file']
 applyTo: ['demo-web-shop', 'ecommerce-testing']
 ---
 
@@ -12,6 +13,12 @@ applyTo: ['demo-web-shop', 'ecommerce-testing']
 This document provides page object templates for testing the **Tricentis Demo Web Shop** (https://demowebshop.tricentis.com/).
 
 > NOTE: These templates are intended to be used by the Page Object Generator agent and are not standalone agents themselves.
+
+## Implementation
+
+This worker document provides concrete page object templates for the Page Object Generator. The generator should use these templates to create `pages/` files that match the Demo Web Shop selectors and repository conventions.
+
+> The agent should only create code from these templates when test cases require Demo Web Shop functionality.
 
 These templates can be used by the Page Object Generator agent to create standardized page objects for the e-commerce platform.
 

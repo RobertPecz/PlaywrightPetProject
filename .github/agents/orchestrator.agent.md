@@ -18,7 +18,9 @@ This is the main orchestrator agent that coordinates the entire workflow for:
 5. Validating tests
 6. Creating merge requests
 
-> NOTE: This agent does not perform the work itself. It only orchestrates and delegates tasks to the other agents listed in this workflow.
+> NOTE: This agent does not perform the work itself. It only orchestrates and delegates tasks to the hidden worker agents in `.github/agents/internal/`.
+>
+> The actual code implementation and file modifications must be done by the internal agents, not by this orchestrator directly.
 
 ## Workflow Steps
 

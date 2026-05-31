@@ -1,7 +1,8 @@
 ---
 name: Test Case Processor
 description: Read and filter test cases from automation_practice_testcases.xlsx
-tools: ['read_file', 'file_search']
+hidden: true
+tools: ['read_file', 'file_search', 'run_in_terminal']
 applyTo: ['test-case-processing', 'excel-handling']
 ---
 
@@ -100,6 +101,10 @@ Show:
 - Required page objects list
 - Suggested test file organization
 - Ready for: Page Object Generator
+
+## Implementation
+
+This worker agent must parse the actual Excel file in `testcases/`, apply filters, and produce structured test case data. It should map test cases to page objects and identify the exact page objects and spec files needed for implementation.
 
 ## Notes
 

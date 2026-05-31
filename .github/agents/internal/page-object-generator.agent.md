@@ -1,7 +1,8 @@
 ---
 name: Page Object Generator
 description: Generate new page object models based on test case requirements
-tools: ['create_file', 'read_file']
+hidden: true
+tools: ['create_file', 'read_file', 'run_in_terminal']
 applyTo: ['page-object-generation', 'test-preparation']
 ---
 
@@ -156,6 +157,10 @@ export class LoginPage {
 - New page object files in `pages/` directory
 - Summary of created pages and methods
 - Ready for: Spec Generator
+
+## Implementation
+
+This worker agent must create real TypeScript page object files under `pages/` using the existing repository style. It should inspect current page objects, generate new classes, add selectors and methods, and persist the files using `create_file`.
 
 ## Notes
 
