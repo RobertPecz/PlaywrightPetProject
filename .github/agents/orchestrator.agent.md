@@ -3,6 +3,9 @@ name: Test Generation Orchestrator
 description: Main orchestrator for the complete test generation workflow
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> 9fb2af5 (Modified orchestrator)
 tools:
   [
     vscode/installExtension,
@@ -33,7 +36,13 @@ tools:
     agent/runSubagent,
     edit/createDirectory,
     edit/createFile,
+<<<<<<< HEAD
     edit/editFiles,
+=======
+    edit/createJupyterNotebook,
+    edit/editFiles,
+    edit/editNotebook,
+>>>>>>> 9fb2af5 (Modified orchestrator)
     edit/rename,
     search/codebase,
     search/fileSearch,
@@ -61,6 +70,10 @@ tools:
     github/create_pull_request,
     github/create_repository,
     github/delete_file,
+<<<<<<< HEAD
+=======
+    github/fork_repository,
+>>>>>>> 9fb2af5 (Modified orchestrator)
     github/get_commit,
     github/get_file_contents,
     github/get_label,
@@ -71,6 +84,10 @@ tools:
     github/get_team_members,
     github/get_teams,
     github/issue_read,
+<<<<<<< HEAD
+=======
+    github/issue_write,
+>>>>>>> 9fb2af5 (Modified orchestrator)
     github/list_branches,
     github/list_commits,
     github/list_issue_types,
@@ -79,8 +96,15 @@ tools:
     github/list_releases,
     github/list_repository_collaborators,
     github/list_tags,
+<<<<<<< HEAD
     github/pull_request_read,
     github/pull_request_review_write,
+=======
+    github/merge_pull_request,
+    github/pull_request_read,
+    github/pull_request_review_write,
+    github/push_files,
+>>>>>>> 9fb2af5 (Modified orchestrator)
     github/request_copilot_review,
     github/run_secret_scanning,
     github/search_code,
@@ -92,6 +116,7 @@ tools:
     github/sub_issue_write,
     github/update_pull_request,
     github/update_pull_request_branch,
+<<<<<<< HEAD
   ]
 applyTo: ['orchestration', 'test-workflow', 'test-generation']
 =======
@@ -100,6 +125,10 @@ applyTo: ["orchestration", "test-workflow", "test-generation"]
 >>>>>>> 4475e1c (feat: Extend agents with Demo Web Shop application reference)
 =======
 tools: ['semantic_search', 'read_file', 'create_file', 'run_in_terminal']
+=======
+    todo,
+  ]
+>>>>>>> 9fb2af5 (Modified orchestrator)
 applyTo: ['orchestration', 'test-workflow', 'test-generation']
 >>>>>>> 35565bf (Finalize agents)
 ---
