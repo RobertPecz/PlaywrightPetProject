@@ -37,12 +37,16 @@ tools:
     edit/createDirectory,
     edit/createFile,
 <<<<<<< HEAD
+<<<<<<< HEAD
     edit/editFiles,
 =======
     edit/createJupyterNotebook,
     edit/editFiles,
     edit/editNotebook,
 >>>>>>> 9fb2af5 (Modified orchestrator)
+=======
+    edit/editFiles,
+>>>>>>> 08eaf28 (Delete not necesarry tools)
     edit/rename,
     search/codebase,
     search/fileSearch,
@@ -71,9 +75,12 @@ tools:
     github/create_repository,
     github/delete_file,
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
     github/fork_repository,
 >>>>>>> 9fb2af5 (Modified orchestrator)
+=======
+>>>>>>> 08eaf28 (Delete not necesarry tools)
     github/get_commit,
     github/get_file_contents,
     github/get_label,
@@ -85,9 +92,12 @@ tools:
     github/get_teams,
     github/issue_read,
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
     github/issue_write,
 >>>>>>> 9fb2af5 (Modified orchestrator)
+=======
+>>>>>>> 08eaf28 (Delete not necesarry tools)
     github/list_branches,
     github/list_commits,
     github/list_issue_types,
@@ -97,6 +107,7 @@ tools:
     github/list_repository_collaborators,
     github/list_tags,
 <<<<<<< HEAD
+<<<<<<< HEAD
     github/pull_request_read,
     github/pull_request_review_write,
 =======
@@ -105,6 +116,10 @@ tools:
     github/pull_request_review_write,
     github/push_files,
 >>>>>>> 9fb2af5 (Modified orchestrator)
+=======
+    github/pull_request_read,
+    github/pull_request_review_write,
+>>>>>>> 08eaf28 (Delete not necesarry tools)
     github/request_copilot_review,
     github/run_secret_scanning,
     github/search_code,
@@ -117,6 +132,9 @@ tools:
     github/update_pull_request,
     github/update_pull_request_branch,
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> 08eaf28 (Delete not necesarry tools)
   ]
 applyTo: ['orchestration', 'test-workflow', 'test-generation']
 =======
