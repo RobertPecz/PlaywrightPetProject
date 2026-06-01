@@ -69,6 +69,25 @@ test.describe('Register tests', () => {
     });
   });
 
+  test('Register user with valid email and mismatched confirm password', async ({ page }) => {
+    let registerpage: RegisterPage;
+    const mainPage = new MainPage(page);
+
+    await test.step('Navigate and populate the registration data', async () => {
+      registerpage = await mainPage.navigateToRegisterPage();
+    });
+
+    await test.step('Populate register data with mismatched passwords', async () => {
+      await registerpage.populateRegisterData({ confirmPassword: 'Mismatch123!' });
+    });
+
+    await test.step('Validate that the confirm password mismatch error is visible', async () => {
+      await expect(
+        registerpage.elements.passwordValidationField(registerPageData.dataValmsgForConfirmPasswordData),
+      ).toHaveText(errorMessagesData.passwordConfirmationMismatchErrorMessage);
+    });
+  });
+
   test('Register user with valid email and empty password', async ({ page }) => {
     let registerpage: RegisterPage;
     const mainPage = new MainPage(page);

@@ -109,18 +109,20 @@ class RegisterPage {
     lastNameInput = { lastNameInput: generateRandomString(5) },
     emailOptions = { isValidEmail: true },
     validPasswordNumber = { validPasswordNumber: 6 },
+    confirmPassword,
   }: {
     genderOptions?: genderOptions;
     firstNameInput?: firstNameInput;
     lastNameInput?: lastNameInput;
     emailOptions?: emailOptions;
     validPasswordNumber?: validPasswordNumber;
+    confirmPassword?: string;
   } = {}) {
     await this.fillGender(genderOptions?.genderInput);
     await this.fillFirstName(firstNameInput?.firstNameInput);
     await this.fillLastName(lastNameInput?.lastNameInput);
     await this.fillEmail(emailOptions);
-    await this.fillPassword(validPasswordNumber?.validPasswordNumber);
+    await this.fillPassword(validPasswordNumber?.validPasswordNumber, confirmPassword);
     await this.submit();
   }
 
@@ -193,14 +195,14 @@ class RegisterPage {
   /**
    * Fill password and confirm password fields.
    */
-  private async fillPassword(passwordLength: number = 6): Promise<void> {
+  private async fillPassword(passwordLength: number = 6, confirmPassword?: string): Promise<void> {
     if (passwordLength === 0) {
       return; // Leave password empty for empty password test case
     }
 
     const pwd: string = generateRandomString(passwordLength);
     await this.elements.passwordTextbox().fill(pwd);
-    await this.elements.confirmPasswordTextbox().fill(pwd);
+    await this.elements.confirmPasswordTextbox().fill(confirmPassword ?? pwd);
   }
 
   /**
