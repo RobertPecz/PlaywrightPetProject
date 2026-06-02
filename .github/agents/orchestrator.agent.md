@@ -115,6 +115,13 @@ This is the main orchestrator agent that coordinates the entire workflow for:
 
 Follow these steps in sequence. Each step can be run individually via the corresponding agent, but this orchestrator ensures proper sequencing.
 
+**📌 Workflow Completion**: The orchestrator's work is **FINISHED** when:
+
+1. All tests pass ✅
+2. Merge Request is created ✅
+
+At that point, the PR is ready for team code review and merge decisions.
+
 ### **Phase 1: Discovery & Planning**
 
 #### Step 1️⃣ — Fetch GitHub Issues
@@ -303,7 +310,9 @@ Status: ✓ READY FOR MR
 
 **Output**: GitHub Merge Request URL
 
-**Next**: Code Review & Merge
+**🎉 ORCHESTRATOR WORK COMPLETE** — Once tests pass and MR is created, the orchestrator's responsibilities are fulfilled.
+
+**Next**: Code Review & Merge (Manual Team Process)
 
 ---
 
@@ -454,7 +463,7 @@ npm run build --help
 
 ## Success Criteria
 
-Workflow is successful when:
+**Orchestrator work is complete when:**
 
 - ✓ All GitHub issues processed and selected
 - ✓ All test cases extracted and organized
@@ -464,9 +473,13 @@ Workflow is successful when:
 - ✓ Merge request created on master branch
 - ✓ MR includes test results and issue references
 
+**🎉 Once all criteria above are met, the orchestrator's work is finished. The PR is ready for team review and merge.**
+
 ---
 
-## Next Steps After MR
+## Next Steps After MR (Manual Team Process)
+
+**ℹ️ Note**: The following steps are outside the orchestrator's scope and are handled by the development team:
 
 1. **Code Review**: Team reviews PR changes
 2. **CI/CD**: Automated tests run (if configured)
