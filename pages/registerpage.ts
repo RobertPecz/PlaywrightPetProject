@@ -218,6 +218,42 @@ class RegisterPage {
   setEmailHandlers(handlers: Record<string, EmailHandler>): void {
     this.emailHandlers = { ...this.emailHandlers, ...handlers };
   }
+
+  /**
+   * Public method to fill password field with a specific value.
+   */
+  async fillPasswordField(password: string): Promise<void> {
+    await this.elements.passwordTextbox().fill(password);
+  }
+
+  /**
+   * Public method to fill confirm password field with a specific value.
+   */
+  async fillConfirmPasswordField(confirmPassword: string): Promise<void> {
+    await this.elements.confirmPasswordTextbox().fill(confirmPassword);
+  }
+
+  /**
+   * Public method to clear and change password field to a new value.
+   */
+  async changePasswordField(newPassword: string): Promise<void> {
+    await this.elements.passwordTextbox().clear();
+    await this.elements.passwordTextbox().fill(newPassword);
+  }
+
+  /**
+   * Public method to trigger blur event on password field (triggers validation).
+   */
+  async triggerPasswordFieldBlur(): Promise<void> {
+    await this.elements.passwordTextbox().blur();
+  }
+
+  /**
+   * Public method to trigger blur event on confirm password field (triggers validation).
+   */
+  async triggerConfirmPasswordFieldBlur(): Promise<void> {
+    await this.elements.confirmPasswordTextbox().blur();
+  }
 }
 
 export default RegisterPage;
