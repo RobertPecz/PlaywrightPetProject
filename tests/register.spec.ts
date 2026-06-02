@@ -205,4 +205,39 @@ test.describe('Register tests', () => {
       ).toBeVisible();
     });
   });
+
+  test('Register user with password field change after filling both password fields', async ({ page }) => {
+    let registerpage: RegisterPage;
+    const mainPage = new MainPage(page);
+
+    await test.step('Navigate to registration page', async () => {
+      registerpage = await mainPage.navigateToRegisterPage();
+    });
+
+    await test.step('Fill registration form fields', async () => {
+      await registerpage.elements.genderMaleRadioButton().click();
+      await registerpage.elements.firstnameTextbox().fill('John');
+      await registerpage.elements.lastnameTextbox().fill('Doe');
+      // Generate a random valid email
+      const randomEmail = `test${Math.random().toString(36).substring(7)}@example.com`;
+      await registerpage.elements.emailTextbox().fill(randomEmail);
+    });
+
+    await test.step('Fill password and confirm password with matching values', async () => {
+      const initialPassword = 'MatchPassword123!';
+      await registerpage.fillPasswordField(initialPassword);
+      await registerpage.fillConfirmPasswordField(initialPassword);
+    });
+
+    await test.step('Change password field to a different value', async () => {
+      await registerpage.changePasswordField('DifferentPassword123!');
+      await registerpage.triggerPasswordFieldBlur();
+    });
+
+    await test.step('Validate password mismatch error message is visible', async () => {
+      await expect(
+        registerpage.elements.passwordValidationField(registerPageData.dataValmsgForConfirmPasswordData),
+      ).toHaveText(errorMessagesData.passwordConfirmationMismatchErrorMessage);
+    });
+  });
 });
