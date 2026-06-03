@@ -1,3 +1,4 @@
+import { generateRandomString, generateRandomEmail } from '../support/stringOperations';
 import mainPageData from '../fixtures/mainpageData.json';
 import { Page } from '@playwright/test';
 
@@ -51,25 +52,6 @@ const defaultEmailHandlers: Record<string, EmailHandler> = {
     // Do nothing - leave email empty
   },
 };
-
-// Helper functions
-function generateRandomString(length: number): string {
-  let result = '';
-  const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-
-  for (let index = 0; index < length; index++) {
-    result += characters.charAt(Math.floor(Math.random() * characters.length));
-  }
-
-  return result;
-}
-
-function generateRandomEmail(isValid: boolean = true): string {
-  if (isValid) {
-    return generateRandomString(5) + '@' + generateRandomString(5) + '.com';
-  }
-  return generateRandomString(10);
-}
 
 class RegisterPage {
   readonly page: Page;

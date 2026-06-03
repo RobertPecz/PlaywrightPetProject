@@ -43,7 +43,7 @@ const registerPage = new RegisterPage(page, customHandlers);
 
 - `generateRandomString()`: Generates random alphanumeric strings
 - `generateRandomEmail()`: Generates valid/invalid email addresses
-- These are now module-level functions, not class methods
+- These helper functions are now in `support/stringOperations.ts` and imported as needed
 
 ## How to Extend (Without Modifying the Class)
 
