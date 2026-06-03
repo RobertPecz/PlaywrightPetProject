@@ -83,6 +83,19 @@ export class [PageName] {
 - Use TypeScript strict mode
 - Export class as default or named export
 
+### Step 5a: Helper Functions Organization
+
+**Important**: Reusable helper functions (string generation, data manipulation, etc.) should NOT be defined in page objects.
+
+- **Location**: Place helper functions in `support/` directory (e.g., `support/stringOperations.ts`)
+- **Import**: Import these utilities in page objects using relative paths: `import { helperFunction } from '../support/stringOperations'`
+- **Examples**:
+  - `generateRandomString()` - moved to `support/stringOperations.ts`
+  - `generateRandomEmail()` - moved to `support/stringOperations.ts`
+  - String manipulation utilities
+  - Data generation utilities
+  - Validation helpers
+
 ### Step 6: Create Files
 
 - Create new files in `pages/` directory

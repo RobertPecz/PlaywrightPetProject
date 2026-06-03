@@ -109,17 +109,12 @@ For deeper debugging:
 - Use `--debug` or `--headed` flags
 - Enable `trace` in the config for a Playwright trace you can open with the trace viewer
 
-## 🔧 Development notes & tips
-
-- Keep tests small, focused and independent.
-- Use fixtures for test data and avoid hard-coded values in tests.
-- Prefer page objects / helper modules for common UI flows.
-- If adding CI, use the official Playwright GitHub Action for consistent browser installs.
-
 ## ⚖️ License & contacts
 
 This project uses the `ISC` license (see `package.json`). If you want to report an issue, please include reproduction steps and environment details to help triage.
 
----
+## 🤖 Agent workers
 
-Happy testing! ✅
+This project implementation handled by agents since [7bb7d60](https://github.com/RobertPecz/PlaywrightPetProject/commit/7bb7d6099185e9d138c580d28431bdf6efadb326) commit.
+
+---

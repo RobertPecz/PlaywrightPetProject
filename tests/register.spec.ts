@@ -1,3 +1,4 @@
+import { generateRandomEmail } from '../support/stringOperations';
 import errorMessagesData from '../fixtures/errorMessages.json';
 import registerPageData from '../fixtures/registerData.json';
 import RegisterPage from '../pages/registerpage';
@@ -219,7 +220,7 @@ test.describe('Register tests', () => {
       await registerpage.elements.firstnameTextbox().fill('John');
       await registerpage.elements.lastnameTextbox().fill('Doe');
       // Generate a random valid email
-      const randomEmail = `test${Math.random().toString(36).substring(7)}@example.com`;
+      const randomEmail = generateRandomEmail();
       await registerpage.elements.emailTextbox().fill(randomEmail);
     });
 
