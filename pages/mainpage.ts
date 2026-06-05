@@ -18,6 +18,7 @@ class MainPage {
     credentialErrorLabel: () => this.page.locator("//div[@class='validation-summary-errors']/ul/li"),
     enterValidEmailErrorLabel: () => this.page.locator("//span[@class='field-validation-error']/span[@for='Email']"),
     registerButton: () => this.page.locator("//a[text()='Register']"),
+    logOutButton: () => this.page.getByRole('link', { name: 'Log out' }),
   };
 
   async userLogIn(email: string, password: string) {
@@ -37,6 +38,10 @@ class MainPage {
   async navigateToRegisterPage(): Promise<RegisterPage> {
     await this.elements.registerButton().click();
     return new RegisterPage(this.page);
+  }
+
+  async userLogOut() {
+    await this.elements.logOutButton().click();
   }
 }
 
