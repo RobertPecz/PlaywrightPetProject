@@ -1,3 +1,4 @@
+import { generateRandomEmail } from '../support/stringOperations';
 import CheckoutPage from '../pages/checkoutpage';
 import { test, expect } from '@playwright/test';
 import ProductPage from '../pages/productpage';
@@ -16,23 +17,23 @@ test.describe('Buy product tests', () => {
     test.setTimeout(90000);
     console.log(`Running ${test.info().title}`);
 
-    userEmail = `buyer_${Date.now()}_${Math.floor(Math.random() * 9999)}@test.com`;
+    userEmail = generateRandomEmail();
 
     await page.goto('/register');
-    await page.waitForLoadState('networkidle');
+    await page.waitForLoadState('domcontentloaded');
     await page.getByTestId('FirstName').fill('Test');
     await page.getByTestId('LastName').fill('Buyer');
     await page.getByTestId('Email').fill(userEmail);
     await page.getByTestId('Password').fill(userPassword);
     await page.getByTestId('ConfirmPassword').fill(userPassword);
     await page.getByTestId('register-button').click();
-    await page.waitForLoadState('networkidle');
+    await page.waitForLoadState('domcontentloaded');
 
     // After registration: click Continue (user is logged in at this point)
     const continueBtn = page.locator("input[value='Continue']");
     await continueBtn.waitFor({ state: 'visible', timeout: 10000 });
     await continueBtn.click();
-    await page.waitForLoadState('networkidle');
+    await page.waitForLoadState('domcontentloaded');
 
     // Log out so each test starts from a clean logged-out state
     const mainPage = new MainPage(page);

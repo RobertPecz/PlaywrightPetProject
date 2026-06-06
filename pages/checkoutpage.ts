@@ -45,6 +45,10 @@ class CheckoutPage {
     successMessage: () => this.page.getByRole('heading', { name: 'Thank you' }),
     orderNumberText: () => this.page.getByText(/Order number:/),
     orderDetailsButton: () => this.page.locator('//a[contains(text(), "Order Details")]'),
+
+    // next button
+    nextButton: () =>
+      this.page.locator('input[value="Continue"]:not([disabled]):visible, button:has-text("Continue"):visible').first(),
   };
 
   async fillBillingAddress({
@@ -75,7 +79,6 @@ class CheckoutPage {
     if (await addressSelect.isVisible({ timeout: 3000 }).catch(() => false)) {
       // nopCommerce OPC uses empty string for "New Address" option
       await addressSelect.selectOption({ value: '' }).catch(() => addressSelect.selectOption({ index: 0 }));
-      await this.page.waitForTimeout(1500);
     }
 
     await this.elements.billingFirstNameInput().waitFor({ state: 'visible', timeout: 10000 });
@@ -91,7 +94,6 @@ class CheckoutPage {
     await countrySelect.selectOption({ label: country });
 
     if (state) {
-      await this.page.waitForTimeout(500); // Wait for state dropdown to populate
       const stateSelect = this.elements.billingStateSelect();
       const stateOptions = await stateSelect.locator('option').allTextContents();
       if (stateOptions.includes(state)) {
@@ -120,14 +122,17 @@ class CheckoutPage {
   }
 
   async proceedToNextStep() {
-    // Use :visible so .first() only resolves to a visible Continue button;
-    // hidden buttons from completed OPC steps are excluded by the pseudo-class
-    const nextButton = this.page
-      .locator('input[value="Continue"]:not([disabled]):visible, button:has-text("Continue"):visible')
-      .first();
-    await nextButton.waitFor({ state: 'visible', timeout: 10000 }).catch(() => {});
-    if (await nextButton.isVisible({ timeout: 500 }).catch(() => false)) {
-      await nextButton.click();
+    await this.elements
+      .nextButton()
+      .waitFor({ state: 'visible', timeout: 10000 })
+      .catch(() => {});
+    if (
+      await this.elements
+        .nextButton()
+        .isVisible({ timeout: 500 })
+        .catch(() => false)
+    ) {
+      await this.elements.nextButton().click();
       await this.page.waitForLoadState('networkidle');
     }
   }

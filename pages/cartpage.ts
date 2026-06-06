@@ -34,11 +34,14 @@ class CartPage {
 
     // Empty cart message
     emptyCartMessage: () => this.page.locator('//p[contains(text(), "Your Shopping Cart is empty")]'),
+
+    // tos checkbox
+    tosCheckbox: () => this.page.locator('#termsofservice'),
   };
 
   async openCart() {
     await this.elements.cartLink().click();
-    await this.page.waitForLoadState('networkidle');
+    await this.page.waitForLoadState('domcontentloaded');
   }
 
   async getCartItemsCount(): Promise<number> {
@@ -67,13 +70,13 @@ class CartPage {
 
   async proceedToCheckout() {
     // Accept Terms of Service if required before checkout
-    const tosCheckbox = this.page.locator('#termsofservice');
-    if (await tosCheckbox.isVisible({ timeout: 2000 }).catch(() => false)) {
-      await tosCheckbox.check();
-    }
+    /*if (await this.elements.tosCheckbox().isVisible({ timeout: 2000 }).catch(() => false)) {
+      await this.elements.tosCheckbox().check();
+    }*/
+    await this.elements.tosCheckbox().check();
     await this.elements.checkoutButton().click();
     await this.page.waitForURL(/checkout|onepagecheckout/, { timeout: 10000 }).catch(() => {});
-    await this.page.waitForLoadState('networkidle');
+    await this.page.waitForLoadState('domcontentloaded');
   }
 
   async isCartEmpty(): Promise<boolean> {
@@ -82,7 +85,7 @@ class CartPage {
 
   async clearCart() {
     await this.page.goto('/cart');
-    await this.page.waitForLoadState('networkidle');
+    await this.page.waitForLoadState('domcontentloaded');
     const checkboxes = this.elements.removeItemCheckboxes();
     const count = await checkboxes.count();
     if (count > 0) {
@@ -90,7 +93,7 @@ class CartPage {
         await checkboxes.nth(i).check();
       }
       await this.elements.updateCartButton().click();
-      await this.page.waitForLoadState('networkidle');
+      await this.page.waitForLoadState('domcontentloaded');
     }
   }
 

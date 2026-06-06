@@ -11,6 +11,7 @@ class ProductPage {
     // Main categories/navigation
     categoriesMenu: () => this.page.locator('//div[@class="listbox"]//a'),
     categoryLink: (categoryName: string) => this.page.locator(`//a[contains(text(), "${categoryName}")]`).first(),
+    subCategoryLink: () => this.page.locator('.sub-category-item h2.title a').first(),
 
     // Product listing - More robust selectors
     productItems: () => this.page.locator('//div[@class="product-grid"]//div[@class="item-box"]'),
@@ -34,7 +35,7 @@ class ProductPage {
 
   async navigateToCategory(categoryName: string) {
     await this.elements.categoryLink(categoryName).click();
-    await this.page.waitForLoadState('networkidle');
+    await this.page.waitForLoadState('domcontentloaded');
 
     // If no products are listed (e.g. parent category with sub-categories), drill into the first sub-category
     const hasProducts = await this.elements
@@ -42,17 +43,21 @@ class ProductPage {
       .isVisible({ timeout: 3000 })
       .catch(() => false);
     if (!hasProducts) {
-      const subCategoryLink = this.page.locator('.sub-category-item h2.title a').first();
-      if (await subCategoryLink.isVisible({ timeout: 3000 }).catch(() => false)) {
-        await subCategoryLink.click();
-        await this.page.waitForLoadState('networkidle');
+      if (
+        await this.elements
+          .subCategoryLink()
+          .isVisible({ timeout: 3000 })
+          .catch(() => false)
+      ) {
+        await this.elements.subCategoryLink().click();
+        await this.page.waitForLoadState('domcontentloaded');
       }
     }
   }
 
   async selectProductByName(productName: string) {
     await this.elements.productByName(productName).click();
-    await this.page.waitForLoadState('networkidle');
+    await this.page.waitForLoadState('domcontentloaded');
   }
 
   async selectProductByIndex(index: number = 0) {
@@ -60,7 +65,7 @@ class ProductPage {
     // Wait for the link to be visible before clicking
     await productLink.waitFor({ state: 'visible', timeout: 10000 });
     await productLink.click();
-    await this.page.waitForLoadState('networkidle');
+    await this.page.waitForLoadState('domcontentloaded');
   }
 
   async setQuantity(quantity: number) {
