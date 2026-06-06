@@ -1,4 +1,3 @@
-import mainpageData from '../fixtures/mainpageData.json';
 import CheckoutPage from '../pages/checkoutpage';
 import { test, expect } from '@playwright/test';
 import ProductPage from '../pages/productpage';
@@ -6,8 +5,38 @@ import MainPage from '../pages/mainpage';
 import CartPage from '../pages/cartpage';
 
 test.describe('Buy product tests', () => {
+  test.describe.configure({ mode: 'serial' });
+
+  // Fresh credentials per worker run — avoids shared cart/checkout conflicts in parallel browsers
+  let userEmail: string;
+  const userPassword = 'Password123';
+
   test.beforeEach(async ({ page }) => {
+    // Per the test case spec: use fresh registration so tests don't share state
+    test.setTimeout(90000);
     console.log(`Running ${test.info().title}`);
+
+    userEmail = `buyer_${Date.now()}_${Math.floor(Math.random() * 9999)}@test.com`;
+
+    await page.goto('/register');
+    await page.waitForLoadState('networkidle');
+    await page.getByTestId('FirstName').fill('Test');
+    await page.getByTestId('LastName').fill('Buyer');
+    await page.getByTestId('Email').fill(userEmail);
+    await page.getByTestId('Password').fill(userPassword);
+    await page.getByTestId('ConfirmPassword').fill(userPassword);
+    await page.getByTestId('register-button').click();
+    await page.waitForLoadState('networkidle');
+
+    // After registration: click Continue (user is logged in at this point)
+    const continueBtn = page.locator("input[value='Continue']");
+    await continueBtn.waitFor({ state: 'visible', timeout: 10000 });
+    await continueBtn.click();
+    await page.waitForLoadState('networkidle');
+
+    // Log out so each test starts from a clean logged-out state
+    const mainPage = new MainPage(page);
+    await mainPage.userLogOut();
     await page.goto('/');
   });
 
@@ -19,8 +48,8 @@ test.describe('Buy product tests', () => {
 
     // Arrange: Log in to the application
     await test.step('User logs in to the application', async () => {
-      await mainPage.userLogIn(mainpageData.email, mainpageData.password);
-      await expect(mainPage.elements.loggedInUserLink(mainpageData.email)).toBeVisible();
+      await mainPage.userLogIn(userEmail, userPassword);
+      await expect(mainPage.elements.loggedInUserLink(userEmail)).toBeVisible();
     });
 
     // Arrange: Navigate to product section
@@ -78,7 +107,7 @@ test.describe('Buy product tests', () => {
       await checkoutPage.fillBillingAddress({
         firstName: 'John',
         lastName: 'Doe',
-        email: 'john.doe@example.com',
+        email: userEmail,
         company: 'Test Company',
         country: 'United States',
         state: 'New York',
@@ -91,15 +120,22 @@ test.describe('Buy product tests', () => {
 
     // Act: Proceed through checkout steps
     await test.step('Proceed through checkout steps', async () => {
-      // Proceed to shipping method
+      // Continue past billing address (opens shipping address step)
       await checkoutPage.proceedToNextStep();
 
-      // Select shipping method (if available)
+      // Select the valid shipping address (billing address was just saved to address book)
+      await checkoutPage.selectShippingAddressByName('John Doe');
+      await checkoutPage.proceedToNextStep();
+
+      // Select shipping method and continue
       await checkoutPage.selectShippingMethod('Ground');
       await checkoutPage.proceedToNextStep();
 
-      // Select payment method and proceed
+      // Select payment method and continue
       await checkoutPage.selectPaymentMethod('Credit Card');
+      await checkoutPage.proceedToNextStep();
+
+      // Continue past payment info step (safe no-op if not present)
       await checkoutPage.proceedToNextStep();
     });
 
@@ -125,8 +161,8 @@ test.describe('Buy product tests', () => {
 
     // Arrange: Log in to the application
     await test.step('User logs in to the application', async () => {
-      await mainPage.userLogIn(mainpageData.email, mainpageData.password);
-      await expect(mainPage.elements.loggedInUserLink(mainpageData.email)).toBeVisible();
+      await mainPage.userLogIn(userEmail, userPassword);
+      await expect(mainPage.elements.loggedInUserLink(userEmail)).toBeVisible();
     });
 
     // Arrange: Navigate to products

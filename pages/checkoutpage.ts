@@ -10,16 +10,17 @@ class CheckoutPage {
   elements = {
     // Billing address section
     billingAddressTitle: () => this.page.locator('//div[@class="section" and contains(.//h3, "Billing Address")]'),
-    billingFirstNameInput: () => this.page.getByTestId('BillingNewAddress.FirstName'),
-    billingLastNameInput: () => this.page.getByTestId('BillingNewAddress.LastName'),
-    billingEmailInput: () => this.page.getByTestId('BillingNewAddress.Email'),
-    billingCompanyInput: () => this.page.getByTestId('BillingNewAddress.Company'),
-    billingCountrySelect: () => this.page.getByTestId('BillingNewAddress.CountryId'),
-    billingStateSelect: () => this.page.getByTestId('BillingNewAddress.StateProvinceId'),
-    billingCityInput: () => this.page.getByTestId('BillingNewAddress.City'),
-    billingAddressInput: () => this.page.getByTestId('BillingNewAddress.Address1'),
-    billingZipInput: () => this.page.getByTestId('BillingNewAddress.ZipPostalCode'),
-    billingPhoneInput: () => this.page.getByTestId('BillingNewAddress.PhoneNumber'),
+    billingAddressSelect: () => this.page.locator('select[name="billing_address_id"]'),
+    billingFirstNameInput: () => this.page.locator('#BillingNewAddress_FirstName'),
+    billingLastNameInput: () => this.page.locator('#BillingNewAddress_LastName'),
+    billingEmailInput: () => this.page.locator('#BillingNewAddress_Email'),
+    billingCompanyInput: () => this.page.locator('#BillingNewAddress_Company'),
+    billingCountrySelect: () => this.page.locator('#BillingNewAddress_CountryId'),
+    billingStateSelect: () => this.page.locator('#BillingNewAddress_StateProvinceId'),
+    billingCityInput: () => this.page.locator('#BillingNewAddress_City'),
+    billingAddressInput: () => this.page.locator('#BillingNewAddress_Address1'),
+    billingZipInput: () => this.page.locator('#BillingNewAddress_ZipPostalCode'),
+    billingPhoneInput: () => this.page.locator('#BillingNewAddress_PhoneNumber'),
 
     // Shipping address section
     shippingAsAddressCheckbox: () => this.page.locator('//input[@id="ShippingNewAddress_IsDifferentAddress"]'),
@@ -35,13 +36,14 @@ class CheckoutPage {
     orderSummary: () => this.page.locator('//div[@class="order-summary"]'),
     orderTotal: () => this.page.locator('//span[@class="product-price"]'),
 
-    // Navigation buttons
-    nextStepButtons: () => this.page.locator('//input[@name="nextstep"]'),
+    // Shipping address selector (step 2 of OPC)
+    shippingAddressSelect: () => this.page.locator('select[name="shipping_address_id"]'),
+
     confirmOrderButton: () => this.page.locator('//input[@value="Confirm"]'),
 
-    // Success message
-    successMessage: () => this.page.locator('//div[@class="page-title"]/h1[contains(text(), "Thank")]'),
-    orderNumberText: () => this.page.locator('//strong[contains(text(), "Order number:")]'),
+    // Success message — nopCommerce confirmation page shows h1 "Thank you"
+    successMessage: () => this.page.getByRole('heading', { name: 'Thank you' }),
+    orderNumberText: () => this.page.getByText(/Order number:/),
     orderDetailsButton: () => this.page.locator('//a[contains(text(), "Order Details")]'),
   };
 
@@ -68,6 +70,15 @@ class CheckoutPage {
     zipCode: string;
     phone: string;
   }) {
+    // If existing addresses are saved, select "New Address" to show the form fields
+    const addressSelect = this.elements.billingAddressSelect();
+    if (await addressSelect.isVisible({ timeout: 3000 }).catch(() => false)) {
+      // nopCommerce OPC uses empty string for "New Address" option
+      await addressSelect.selectOption({ value: '' }).catch(() => addressSelect.selectOption({ index: 0 }));
+      await this.page.waitForTimeout(1500);
+    }
+
+    await this.elements.billingFirstNameInput().waitFor({ state: 'visible', timeout: 10000 });
     await this.elements.billingFirstNameInput().fill(firstName);
     await this.elements.billingLastNameInput().fill(lastName);
     await this.elements.billingEmailInput().fill(email);
@@ -109,25 +120,48 @@ class CheckoutPage {
   }
 
   async proceedToNextStep() {
-    const nextButton = this.elements.nextStepButtons();
-    if (await nextButton.first().isVisible()) {
-      await nextButton.first().click();
+    // Use :visible so .first() only resolves to a visible Continue button;
+    // hidden buttons from completed OPC steps are excluded by the pseudo-class
+    const nextButton = this.page
+      .locator('input[value="Continue"]:not([disabled]):visible, button:has-text("Continue"):visible')
+      .first();
+    await nextButton.waitFor({ state: 'visible', timeout: 10000 }).catch(() => {});
+    if (await nextButton.isVisible({ timeout: 500 }).catch(() => false)) {
+      await nextButton.click();
       await this.page.waitForLoadState('networkidle');
+    }
+  }
+
+  async selectShippingAddressByName(name: string) {
+    const select = this.elements.shippingAddressSelect();
+    if (await select.isVisible({ timeout: 3000 }).catch(() => false)) {
+      const options = await select.locator('option').allTextContents();
+      const match = options.find((opt) => opt.includes(name));
+      if (match) {
+        await select.selectOption({ label: match });
+        await this.page.waitForTimeout(500);
+      }
     }
   }
 
   async confirmOrder() {
     await this.elements.confirmOrderButton().click();
-    await this.page.waitForLoadState('networkidle');
+    await this.page.waitForLoadState('load', { timeout: 30000 });
   }
 
   async isOrderConfirmed(): Promise<boolean> {
-    return await this.elements.successMessage().isVisible();
+    return await this.elements
+      .successMessage()
+      .waitFor({ state: 'visible', timeout: 10000 })
+      .then(() => true)
+      .catch(() => false);
   }
 
   async getOrderNumber(): Promise<string | null> {
-    const orderText = await this.elements.orderNumberText().innerText();
-    const match = orderText.match(/Order number: (\d+)/);
+    const el = this.elements.orderNumberText();
+    if (!(await el.isVisible({ timeout: 3000 }).catch(() => false))) return null;
+    const orderText = await el.innerText().catch(() => '');
+    const match = orderText.match(/(\d+)/);
     return match ? match[1] : null;
   }
 }

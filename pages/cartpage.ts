@@ -21,14 +21,16 @@ class CartPage {
     itemRemoveButton: (index: number = 0) => this.page.locator('//button[contains(text(), "Remove")]').nth(index),
 
     // Cart summary
-    subTotal: () => this.page.locator('//tr[@class="order-subtotal"]//td[@class="order-total-value"]'),
-    tax: () => this.page.locator('//tr[@class="tax-total"]//td[@class="order-total-value"]'),
-    shipping: () => this.page.locator('//tr[@class="shipping-total"]//td[@class="order-total-value"]'),
-    totalAmount: () => this.page.locator('//tr[@class="order-total"]//td[@class="order-total-value"]'),
+    subTotal: () => this.page.locator('.totals').first(),
+    tax: () => this.page.locator('.cart-total-right').nth(2),
+    shipping: () => this.page.locator('.cart-total-right').nth(1),
+    totalAmount: () => this.page.locator('.order-total'),
 
     // Cart actions
     continueShopping: () => this.page.locator('//input[@value="Continue Shopping"]'),
-    checkoutButton: () => this.page.locator('//input[@value="Checkout"]'),
+    checkoutButton: () => this.page.locator('button#checkout, button.checkout-button, input[value="Checkout"]'),
+    removeItemCheckboxes: () => this.page.locator('input[name="removefromcart"]'),
+    updateCartButton: () => this.page.locator('input[name="updatecart"], button[name="updatecart"]'),
 
     // Empty cart message
     emptyCartMessage: () => this.page.locator('//p[contains(text(), "Your Shopping Cart is empty")]'),
@@ -63,12 +65,32 @@ class CartPage {
   }
 
   async proceedToCheckout() {
+    // Accept Terms of Service if required before checkout
+    const tosCheckbox = this.page.locator('#termsofservice');
+    if (await tosCheckbox.isVisible({ timeout: 2000 }).catch(() => false)) {
+      await tosCheckbox.check();
+    }
     await this.elements.checkoutButton().click();
+    await this.page.waitForURL(/checkout|onepagecheckout/, { timeout: 10000 }).catch(() => {});
     await this.page.waitForLoadState('networkidle');
   }
 
   async isCartEmpty(): Promise<boolean> {
     return await this.elements.emptyCartMessage().isVisible();
+  }
+
+  async clearCart() {
+    await this.page.goto('/cart');
+    await this.page.waitForLoadState('networkidle');
+    const checkboxes = this.elements.removeItemCheckboxes();
+    const count = await checkboxes.count();
+    if (count > 0) {
+      for (let i = 0; i < count; i++) {
+        await checkboxes.nth(i).check();
+      }
+      await this.elements.updateCartButton().click();
+      await this.page.waitForLoadState('networkidle');
+    }
   }
 
   async continueShopping() {

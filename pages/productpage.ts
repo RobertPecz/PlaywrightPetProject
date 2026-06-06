@@ -22,10 +22,10 @@ class ProductPage {
     },
 
     // Product details page
-    productTitle: () => this.page.locator('//h1[contains(@class, "product-name")]'),
-    productPrice: () => this.page.locator('//span[@class="price-tag-salePrice"]'),
-    quantityInput: () => this.page.getByTestId('product-qty'),
-    addToCartButton: () => this.page.locator('//input[@value="Add to cart"]'),
+    productTitle: () => this.page.locator('.product-name h1'),
+    productPrice: () => this.page.locator('.actual-price').first(),
+    quantityInput: () => this.page.locator("input[id*='EnteredQuantity']"),
+    addToCartButton: () => this.page.locator('input.button-1.add-to-cart-button'),
 
     // Success notification
     successMessage: () => this.page.locator('//p[@class="content"]'),
@@ -35,14 +35,19 @@ class ProductPage {
   async navigateToCategory(categoryName: string) {
     await this.elements.categoryLink(categoryName).click();
     await this.page.waitForLoadState('networkidle');
-    // Additional wait for product items to be visible
-    await this.elements
-      .productItems()
-      .first()
-      .waitFor({ state: 'visible', timeout: 10000 })
-      .catch(() => {
-        // If items don't load, continue anyway - they might load asynchronously
-      });
+
+    // If no products are listed (e.g. parent category with sub-categories), drill into the first sub-category
+    const hasProducts = await this.elements
+      .productLink(0)
+      .isVisible({ timeout: 3000 })
+      .catch(() => false);
+    if (!hasProducts) {
+      const subCategoryLink = this.page.locator('.sub-category-item h2.title a').first();
+      if (await subCategoryLink.isVisible({ timeout: 3000 }).catch(() => false)) {
+        await subCategoryLink.click();
+        await this.page.waitForLoadState('networkidle');
+      }
+    }
   }
 
   async selectProductByName(productName: string) {
