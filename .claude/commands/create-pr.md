@@ -68,76 +68,48 @@ EOF
 
 ### Step 6: Push Branch
 
-**Important**: The `pat.txt` token has read-only scope and cannot push. Ask the user to push manually:
+The `pat.txt` token has `repo` scope — full write access. Push by embedding the PAT in the HTTPS URL. No user action needed:
 
-> "Please run: `git push -u origin <branch-name>`  
-> (or type `! git push -u origin <branch-name>` in this prompt)"
-
-Wait for confirmation before proceeding to Step 7.
+```bash
+PAT=$(cat pat.txt)
+BRANCH=$(git rev-parse --abbrev-ref HEAD)
+git push "https://${PAT}@github.com/RobertPecz/PlaywrightPetProject.git" "${BRANCH}"
+```
 
 ### Step 7: Create Pull Request
 
-Preferred: use the `mcp__github__create_pull_request` tool if available.
-
-Fallback — if MCP tools are unavailable or return 403, provide the user with the direct URL:
-`https://github.com/RobertPecz/PlaywrightPetProject/compare/master...<branch-name>`
-
-And paste this as the PR body:
+`gh` CLI is not installed. Use the GitHub REST API with `curl`. No user action needed:
 
 ```bash
-gh pr create \
-  --title "feat: Add tests for [feature] (#<issue_id>)" \
-  --base master \
-  --body "$(cat <<'EOF'
-## Summary
+PAT=$(cat pat.txt)
+BRANCH=$(git rev-parse --abbrev-ref HEAD)
 
-- Added page objects: [list]
-- Added test specs: [list]
-- X total tests — all passing
+PR_URL=$(curl -s -X POST \
+  -H "Authorization: token ${PAT}" \
+  -H "Content-Type: application/json" \
+  -d "{
+    \"title\": \"feat: Add tests for [feature] (#<issue_id>)\",
+    \"head\": \"${BRANCH}\",
+    \"base\": \"master\",
+    \"body\": \"## Summary\n\n- Added page objects: [list]\n- Added test specs: [list]\n- X total tests — all passing\n\n## Test Results\n\n✓ All X tests passing\n\n## Related Issues\n\nFixes #<issue_id>\n\n## Checklist\n\n- [x] All tests passing\n- [x] Page objects follow project conventions\n- [x] Test specs follow project patterns (AAA, test.step)\n- [x] TypeScript compiles without errors\n- [x] No breaking changes to existing tests\n- [x] Related GitHub issue(s) referenced\n\n🤖 Generated with [Claude Code](https://claude.com/claude-code)\"
+  }" \
+  "https://api.github.com/repos/RobertPecz/PlaywrightPetProject/pulls" \
+  | python3 -c "import sys,json; r=json.load(sys.stdin); print(r.get('html_url', r.get('message','error')))")
 
-## Test Results
-
-✓ All X tests passing
-
-## Related Issues
-
-Fixes #<issue_id>
-
-## Testing Instructions
-
-\`\`\`bash
-npm test -- tests/<feature>.spec.ts  # run specific spec
-npm test                              # run full suite
-\`\`\`
-
-## Checklist
-
-- [x] All tests passing
-- [x] Page objects follow project conventions
-- [x] Test specs follow project patterns (AAA, test.step)
-- [x] TypeScript compiles without errors
-- [x] No breaking changes to existing tests
-- [x] Related GitHub issue(s) referenced
-
-🤖 Generated with [Claude Code](https://claude.com/claude-code)
-EOF
-)"
+echo "PR created: ${PR_URL}"
 ```
 
 ### Step 8: Verify PR
 
-After creation:
-
 ```bash
-gh pr view --web
+PAT=$(cat pat.txt)
+BRANCH=$(git rev-parse --abbrev-ref HEAD)
+curl -s -H "Authorization: token ${PAT}" \
+  "https://api.github.com/repos/RobertPecz/PlaywrightPetProject/pulls?head=RobertPecz:${BRANCH}" \
+  | python3 -c "import sys,json; prs=json.load(sys.stdin); [print(p['html_url'], '—', p['state']) for p in prs]"
 ```
 
-Confirm:
-
-- Base branch is `master`
-- All committed files are visible in the diff
-- Related issue is linked
-- Title and description are correct
+Confirm: base branch is `master`, related issue is linked, diff shows only test/page files.
 
 ## Output
 
@@ -146,7 +118,7 @@ Return the GitHub PR URL and a summary:
 ```
 ✅ Pull Request created!
 URL: https://github.com/RobertPecz/PlaywrightPetProject/pull/<number>
-Branch: add_tests_<ticket_id> → master
+Branch: <branch> → master
 Tests: X passing
 ```
 
@@ -154,6 +126,4 @@ Tests: X passing
 
 - Never commit `pat.txt`, `.env`, or credential files
 - Keep the PR focused on test files (`tests/`, `pages/`) only
-- The `pat.txt` token is read-only: `git push` via HTTPS and `mcp__github__create_pull_request` both return 403
-- `gh` CLI is not installed; the user must push manually and can create the PR at:
-  `https://github.com/RobertPecz/PlaywrightPetProject/compare/master...<branch>`
+- PAT has `repo` scope — push and PR creation are fully automated via HTTPS + REST API
