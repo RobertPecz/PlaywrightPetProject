@@ -82,7 +82,7 @@ class PageNamePage {
 
   async methodName() {
     await this.elements.elementName().click();
-    await this.page.waitForLoadState('networkidle');
+    await this.page.waitForLoadState('domcontentloaded');
   }
 
   async fillForm(data: string) {

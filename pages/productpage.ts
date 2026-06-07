@@ -26,7 +26,7 @@ class ProductPage {
     productTitle: () => this.page.locator('.product-name h1'),
     productPrice: () => this.page.locator('.actual-price').first(),
     quantityInput: () => this.page.locator("input[id*='EnteredQuantity']"),
-    addToCartButton: () => this.page.locator('input.button-1.add-to-cart-button'),
+    addToCartButton: () => this.page.locator("//input[contains(@id, 'add-to-cart-button')]"),
 
     // Success notification
     successMessage: () => this.page.locator('//p[@class="content"]'),
@@ -75,6 +75,7 @@ class ProductPage {
 
   async addProductToCart() {
     await this.elements.addToCartButton().click();
+    await this.elements.successMessage().waitFor({ state: 'visible', timeout: 15000 });
   }
 
   async addToCartWithQuantity(quantity: number) {

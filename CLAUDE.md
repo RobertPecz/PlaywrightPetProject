@@ -126,7 +126,7 @@ The cart page shows a Terms of Service checkbox (`#termsofservice`) that must be
 WebKit is stricter about navigation timing than Chromium/Firefox. After any click that triggers a page navigation (login, form submit), add:
 
 ```typescript
-await this.page.waitForLoadState('networkidle');
+await this.page.waitForLoadState('domcontentloaded');
 ```
 
 before any subsequent `goto()` or assertion. Already applied in `mainpage.ts userLogIn()`.

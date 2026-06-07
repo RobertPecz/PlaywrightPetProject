@@ -26,7 +26,7 @@ class MainPage {
     await this.elements.emailTextBox().fill(email);
     await this.elements.passwordTextBox().fill(password);
     await this.elements.signInButton().click();
-    await this.page.waitForLoadState('networkidle');
+    await this.page.waitForLoadState('domcontentloaded');
   }
 
   //The reason why need to press enter because email validation happening on frontend side which could trigger with a keyboard press.

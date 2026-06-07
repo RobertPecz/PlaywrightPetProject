@@ -80,7 +80,7 @@ For each failure, diagnose the root cause:
 **Timing / Race condition:**
 
 - Page hasn't loaded before interaction
-- Fix: add `waitFor({ state: 'visible' })` before interactions, or use `waitForLoadState('networkidle')`
+- Fix: add `waitFor({ state: 'visible' })` before interactions, or use `waitForLoadState('domcontentloaded')`
 
 **nopCommerce OPC (checkout) specific issues:**
 See `.claude/nopcommerce-checkout.md` for the full reference. Key points:
@@ -89,7 +89,7 @@ See `.claude/nopcommerce-checkout.md` for the full reference. Key points:
 - Billing Continue saves the address to the address book. Step 2 then shows a **shipping address dropdown** (`select[name="shipping_address_id"]`) — this step is commonly missed and causes all subsequent `proceedToNextStep()` calls to go to the wrong step
 - Terms of Service checkbox `#termsofservice` must be checked before clicking Checkout (already handled in `cartpage.ts`)
 - "New Address" option in OPC billing dropdown has `value=""` (empty string, not "0")
-- After `confirmOrder()`, use `waitForLoadState('load')` not `'networkidle'`; success heading is `getByRole('heading', { name: 'Thank you' })`
+- After `confirmOrder()`, use `waitForLoadState('domcontentloaded')`; success heading is `getByRole('heading', { name: 'Thank you' })`
 
 **Parallel worker account conflicts (checkout/cart tests):**
 

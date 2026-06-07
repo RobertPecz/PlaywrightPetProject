@@ -73,11 +73,9 @@ test.describe('Buy product tests', () => {
 
     // Assert: Verify product was added
     await test.step('Verify product was successfully added to cart', async () => {
-      await productPage.closeSuccessNotification();
       const notification = productPage.elements.successMessage();
-      if (await notification.isVisible({ timeout: 2000 }).catch(() => false)) {
-        await expect(notification).toContainText('successfully');
-      }
+      await expect(notification).toContainText('added to your shopping cart');
+      await productPage.closeSuccessNotification();
     });
 
     // Act: Navigate to shopping cart
