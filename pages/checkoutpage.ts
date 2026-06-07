@@ -133,7 +133,7 @@ class CheckoutPage {
         .catch(() => false)
     ) {
       await this.elements.nextButton().click();
-      await this.page.waitForLoadState('networkidle');
+      await this.page.waitForLoadState('domcontentloaded');
     }
   }
 

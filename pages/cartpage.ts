@@ -70,9 +70,6 @@ class CartPage {
 
   async proceedToCheckout() {
     // Accept Terms of Service if required before checkout
-    /*if (await this.elements.tosCheckbox().isVisible({ timeout: 2000 }).catch(() => false)) {
-      await this.elements.tosCheckbox().check();
-    }*/
     await this.elements.tosCheckbox().check();
     await this.elements.checkoutButton().click();
     await this.page.waitForURL(/checkout|onepagecheckout/, { timeout: 10000 }).catch(() => {});
