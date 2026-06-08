@@ -16,7 +16,8 @@ class CartPage {
     cartItemCount: () => this.page.locator('//span[@class="cart-qty"]'),
 
     // Item details in cart
-    itemNameInCart: (productName: string) => this.page.locator(`//a[contains(text(), "${productName}")]`),
+    itemNameInCart: (productName: string) =>
+      this.page.locator(`//table[@class="cart"]//a[contains(text(), "${productName}")]`),
     itemQuantityInput: (index: number = 0) => this.page.locator('//input[@class="qty-input"]').nth(index),
     itemRemoveButton: (index: number = 0) => this.page.locator('//button[contains(text(), "Remove")]').nth(index),
 
@@ -92,6 +93,12 @@ class CartPage {
       await this.elements.updateCartButton().click();
       await this.page.waitForLoadState('domcontentloaded');
     }
+  }
+
+  async removeItemByIndex(index: number) {
+    await this.elements.removeItemCheckboxes().nth(index).check();
+    await this.elements.updateCartButton().click();
+    await this.page.waitForLoadState('domcontentloaded');
   }
 
   async continueShopping() {

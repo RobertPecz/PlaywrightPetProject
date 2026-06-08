@@ -282,4 +282,64 @@ test.describe('Buy product tests', () => {
       expect(orderNumber).toBeTruthy();
     });
   });
+
+  test('User can add multiple products to cart and remove one (#92)', async ({ page }) => {
+    const mainPage = new MainPage(page);
+    let productPage: ProductPage;
+    let cartPage: CartPage;
+    let firstProductName: string;
+    let secondProductName: string;
+
+    await test.step('User logs in to the application', async () => {
+      await mainPage.userLogIn(userEmail, userPassword);
+      await expect(mainPage.elements.loggedInUserLink(userEmail)).toBeVisible();
+    });
+
+    await test.step('Navigate to Books and add first product to cart', async () => {
+      productPage = new ProductPage(page);
+      await productPage.navigateToCategory('Books');
+      await expect(productPage.elements.productLink(0)).toBeVisible();
+      await productPage.selectProductByIndex(0);
+      firstProductName = (await productPage.elements.productTitle().innerText()).trim();
+      await productPage.addToCartWithQuantity(1);
+    });
+
+    await test.step('Verify first product was added to cart', async () => {
+      await expect(productPage.elements.successMessage()).toContainText('added to your shopping cart');
+      await productPage.closeSuccessNotification();
+    });
+
+    await test.step('Navigate to Computers and add second product to cart', async () => {
+      await productPage.navigateToCategory('Computers');
+      await expect(productPage.elements.productLink(0)).toBeVisible();
+      await productPage.selectProductByIndex(0);
+      secondProductName = (await productPage.elements.productTitle().innerText()).trim();
+      await productPage.addToCartWithQuantity(1);
+    });
+
+    await test.step('Verify second product was added to cart', async () => {
+      await expect(productPage.elements.successMessage()).toContainText('added to your shopping cart');
+      await productPage.closeSuccessNotification();
+    });
+
+    await test.step('Open cart and verify both products are present', async () => {
+      cartPage = new CartPage(page);
+      await cartPage.openCart();
+      const count = await cartPage.getCartItemsCount();
+      expect(count).toBeGreaterThanOrEqual(2);
+      await expect(cartPage.elements.itemNameInCart(firstProductName)).toBeVisible();
+      await expect(cartPage.elements.itemNameInCart(secondProductName)).toBeVisible();
+    });
+
+    await test.step('Remove the second product from cart', async () => {
+      await cartPage.removeItemByIndex(1);
+    });
+
+    await test.step('Verify only the removed product is missing from cart', async () => {
+      const count = await cartPage.getCartItemsCount();
+      expect(count).toBe(1);
+      await expect(cartPage.elements.itemNameInCart(firstProductName)).toBeVisible();
+      await expect(cartPage.elements.itemNameInCart(secondProductName)).not.toBeVisible();
+    });
+  });
 });
