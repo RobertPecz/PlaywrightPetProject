@@ -193,4 +193,93 @@ test.describe('Buy product tests', () => {
       expect(quantityValue).toBe('2');
     });
   });
+
+  test('User can buy multiple different products and checkout successfully (#90)', async ({ page }) => {
+    const mainPage = new MainPage(page);
+    let productPage: ProductPage;
+    let cartPage: CartPage;
+    let checkoutPage: CheckoutPage;
+
+    await test.step('User logs in to the application', async () => {
+      await mainPage.userLogIn(userEmail, userPassword);
+      await expect(mainPage.elements.loggedInUserLink(userEmail)).toBeVisible();
+    });
+
+    await test.step('Navigate to Books and add first product to cart', async () => {
+      productPage = new ProductPage(page);
+      await productPage.navigateToCategory('Books');
+      await expect(productPage.elements.productLink(0)).toBeVisible();
+      await productPage.selectProductByIndex(0);
+      await productPage.addToCartWithQuantity(1);
+    });
+
+    await test.step('Verify first product was added to cart', async () => {
+      await expect(productPage.elements.successMessage()).toContainText('added to your shopping cart');
+      await productPage.closeSuccessNotification();
+    });
+
+    await test.step('Navigate to Computers and add second different product to cart', async () => {
+      await productPage.navigateToCategory('Computers');
+      await expect(productPage.elements.productLink(0)).toBeVisible();
+      await productPage.selectProductByIndex(0);
+      await productPage.addToCartWithQuantity(1);
+    });
+
+    await test.step('Verify second product was added to cart', async () => {
+      await expect(productPage.elements.successMessage()).toContainText('added to your shopping cart');
+      await productPage.closeSuccessNotification();
+    });
+
+    await test.step('Navigate to shopping cart and verify both products are present', async () => {
+      cartPage = new CartPage(page);
+      await cartPage.openCart();
+      await expect(cartPage.elements.cartItems().first()).toBeVisible();
+      const cartItemCount = await cartPage.getCartItemsCount();
+      expect(cartItemCount).toBeGreaterThanOrEqual(2);
+      const cartTotal = await cartPage.getTotalAmount();
+      expect(cartTotal).toBeTruthy();
+    });
+
+    await test.step('Proceed to checkout', async () => {
+      await cartPage.proceedToCheckout();
+    });
+
+    await test.step('Fill billing address', async () => {
+      checkoutPage = new CheckoutPage(page);
+      await checkoutPage.fillBillingAddress({
+        firstName: 'John',
+        lastName: 'Doe',
+        email: userEmail,
+        company: 'Test Company',
+        country: 'United States',
+        state: 'New York',
+        city: 'New York',
+        address: '123 Main Street',
+        zipCode: '10001',
+        phone: '+1 (212) 555-0100',
+      });
+    });
+
+    await test.step('Proceed through all checkout steps', async () => {
+      await checkoutPage.proceedToNextStep();
+      await checkoutPage.selectShippingAddressByName('John Doe');
+      await checkoutPage.proceedToNextStep();
+      await checkoutPage.selectShippingMethod('Ground');
+      await checkoutPage.proceedToNextStep();
+      await checkoutPage.selectPaymentMethod('Credit Card');
+      await checkoutPage.proceedToNextStep();
+      await checkoutPage.proceedToNextStep();
+    });
+
+    await test.step('Confirm the order', async () => {
+      await checkoutPage.confirmOrder();
+    });
+
+    await test.step('Verify order was successfully placed', async () => {
+      const isConfirmed = await checkoutPage.isOrderConfirmed();
+      expect(isConfirmed).toBeTruthy();
+      const orderNumber = await checkoutPage.getOrderNumber();
+      expect(orderNumber).toBeTruthy();
+    });
+  });
 });

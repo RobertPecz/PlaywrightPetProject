@@ -45,7 +45,7 @@ class CartPage {
   }
 
   async getCartItemsCount(): Promise<number> {
-    await this.elements.cartItems().isVisible({ timeout: 30000 });
+    await this.elements.cartItems().first().waitFor({ state: 'visible', timeout: 30000 });
     const items = await this.elements.cartItems().count();
     return items;
   }
