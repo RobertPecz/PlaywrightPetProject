@@ -34,7 +34,7 @@ class CartPage {
     updateCartButton: () => this.page.locator('input[name="updatecart"], button[name="updatecart"]'),
 
     // Empty cart message
-    emptyCartMessage: () => this.page.locator('//p[contains(text(), "Your Shopping Cart is empty")]'),
+    emptyCartMessage: () => this.page.getByText('Your Shopping Cart is empty!'),
 
     // tos checkbox
     tosCheckbox: () => this.page.locator('#termsofservice'),
@@ -78,7 +78,11 @@ class CartPage {
   }
 
   async isCartEmpty(): Promise<boolean> {
-    return await this.elements.emptyCartMessage().isVisible();
+    return await this.elements
+      .emptyCartMessage()
+      .waitFor({ state: 'visible', timeout: 10000 })
+      .then(() => true)
+      .catch(() => false);
   }
 
   async clearCart() {
