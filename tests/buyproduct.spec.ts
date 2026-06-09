@@ -283,6 +283,53 @@ test.describe('Buy product tests', () => {
     });
   });
 
+  test('User can add product to cart and remove it, cart should be empty (#91)', async ({ page }) => {
+    const mainPage = new MainPage(page);
+    let productPage: ProductPage;
+    let cartPage: CartPage;
+
+    // Arrange: Log in to the application
+    await test.step('User logs in to the application', async () => {
+      await mainPage.userLogIn(userEmail, userPassword);
+      await expect(mainPage.elements.loggedInUserLink(userEmail)).toBeVisible();
+    });
+
+    // Arrange: Navigate to product category and add a product to cart
+    await test.step('Navigate to Computers category and add first product to cart', async () => {
+      productPage = new ProductPage(page);
+      await productPage.navigateToCategory('Computers');
+      await expect(productPage.elements.productLink(0)).toBeVisible();
+      await productPage.selectProductByIndex(0);
+      await productPage.addToCartWithQuantity(1);
+    });
+
+    // Assert: Verify product was added
+    await test.step('Verify product was successfully added to cart', async () => {
+      await expect(productPage.elements.successMessage()).toContainText('added to your shopping cart');
+      await productPage.closeSuccessNotification();
+    });
+
+    // Act: Navigate to cart and verify product is present
+    await test.step('Navigate to shopping cart and verify product is present', async () => {
+      cartPage = new CartPage(page);
+      await cartPage.openCart();
+      await expect(cartPage.elements.cartItems().first()).toBeVisible();
+      const itemCount = await cartPage.getCartItemsCount();
+      expect(itemCount).toBeGreaterThan(0);
+    });
+
+    // Act: Remove the product from cart
+    await test.step('Remove the product from cart', async () => {
+      await cartPage.removeItemByIndex(0);
+    });
+
+    // Assert: Verify cart is empty
+    await test.step('Verify the shopping cart is empty', async () => {
+      const isEmpty = await cartPage.isCartEmpty();
+      expect(isEmpty).toBeTruthy();
+    });
+  });
+
   test('User can add multiple products to cart and remove one (#92)', async ({ page }) => {
     const mainPage = new MainPage(page);
     let productPage: ProductPage;
