@@ -14,7 +14,7 @@ test.describe('Buy product tests', () => {
 
   test.beforeEach(async ({ page }) => {
     // Per the test case spec: use fresh registration so tests don't share state
-    test.setTimeout(90000);
+    test.setTimeout(process.env.CI ? 150000 : 90000);
     console.log(`Running ${test.info().title}`);
 
     userEmail = generateRandomEmail();
