@@ -105,6 +105,12 @@ class CartPage {
     await this.page.waitForLoadState('domcontentloaded');
   }
 
+  async updateQuantityInCartView(index: number, quantity: number) {
+    await this.updateItemQuantity(index, quantity);
+    await this.elements.updateCartButton().click();
+    await this.page.waitForLoadState('domcontentloaded');
+  }
+
   async continueShopping() {
     await this.elements.continueShopping().click();
   }

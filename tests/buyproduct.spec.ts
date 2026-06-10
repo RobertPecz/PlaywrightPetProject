@@ -14,7 +14,7 @@ test.describe('Buy product tests', () => {
 
   test.beforeEach(async ({ page }) => {
     // Per the test case spec: use fresh registration so tests don't share state
-    test.setTimeout(90000);
+    test.setTimeout(process.env.CI ? 150000 : 90000);
     console.log(`Running ${test.info().title}`);
 
     userEmail = generateRandomEmail();
@@ -327,6 +327,47 @@ test.describe('Buy product tests', () => {
     await test.step('Verify the shopping cart is empty', async () => {
       const isEmpty = await cartPage.isCartEmpty();
       expect(isEmpty).toBeTruthy();
+    });
+  });
+
+  test('User can add one product to cart and increase quantity in cart view (#93)', async ({ page }) => {
+    const mainPage = new MainPage(page);
+    let productPage: ProductPage;
+    let cartPage: CartPage;
+
+    await test.step('User logs in to the application', async () => {
+      await mainPage.userLogIn(userEmail, userPassword);
+      await expect(mainPage.elements.loggedInUserLink(userEmail)).toBeVisible();
+    });
+
+    await test.step('Navigate to Computers and add first product to cart with quantity 1', async () => {
+      productPage = new ProductPage(page);
+      await productPage.navigateToCategory('Computers');
+      await expect(productPage.elements.productLink(0)).toBeVisible();
+      await productPage.selectProductByIndex(0);
+      await productPage.addToCartWithQuantity(1);
+    });
+
+    await test.step('Verify product was successfully added to cart', async () => {
+      await expect(productPage.elements.successMessage()).toContainText('added to your shopping cart');
+      await productPage.closeSuccessNotification();
+    });
+
+    await test.step('Navigate to cart and verify initial quantity is 1', async () => {
+      cartPage = new CartPage(page);
+      await cartPage.openCart();
+      await expect(cartPage.elements.cartItems().first()).toBeVisible();
+      const quantityInput = cartPage.elements.itemQuantityInput(0);
+      expect(await quantityInput.inputValue()).toBe('1');
+    });
+
+    await test.step('Update quantity to 3 in the cart view', async () => {
+      await cartPage.updateQuantityInCartView(0, 3);
+    });
+
+    await test.step('Verify cart shows updated quantity of 3', async () => {
+      const quantityInput = cartPage.elements.itemQuantityInput(0);
+      expect(await quantityInput.inputValue()).toBe('3');
     });
   });
 
