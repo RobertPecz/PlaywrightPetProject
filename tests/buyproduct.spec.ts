@@ -454,6 +454,80 @@ test.describe('Buy product tests', () => {
     });
   });
 
+  test('User can buy product without logging in (guest checkout) (#96)', async ({ page }) => {
+    const guestEmail = generateRandomEmail();
+    let productPage: ProductPage;
+    let cartPage: CartPage;
+    let checkoutPage: CheckoutPage;
+
+    await test.step('Navigate to Books category as guest (not logged in)', async () => {
+      productPage = new ProductPage(page);
+      await productPage.navigateToCategory('Books');
+      await expect(productPage.elements.productLink(0)).toBeVisible();
+    });
+
+    await test.step('Select first product and add to cart', async () => {
+      await productPage.selectProductByIndex(0);
+      await productPage.addToCartWithQuantity(1);
+    });
+
+    await test.step('Verify product was added to cart', async () => {
+      await expect(productPage.elements.successMessage()).toContainText('added to your shopping cart');
+      await productPage.closeSuccessNotification();
+    });
+
+    await test.step('Navigate to shopping cart and verify item is present', async () => {
+      cartPage = new CartPage(page);
+      await cartPage.openCart();
+      await expect(cartPage.elements.cartItems().first()).toBeVisible();
+    });
+
+    await test.step('Proceed to checkout and select guest checkout option', async () => {
+      await cartPage.proceedToCheckout();
+      checkoutPage = new CheckoutPage(page);
+      await checkoutPage.checkoutAsGuest();
+    });
+
+    await test.step('Fill billing address as guest', async () => {
+      await checkoutPage.fillBillingAddress({
+        firstName: 'Guest',
+        lastName: 'User',
+        email: guestEmail,
+        country: 'United States',
+        city: 'New York',
+        address: '123 Main Street',
+        zipCode: '10001',
+        phone: '+1 (212) 555-0100',
+      });
+    });
+
+    await test.step('Proceed through all checkout steps', async () => {
+      // Step 1 billing → Step 2 shipping address (guest still gets this step)
+      await checkoutPage.proceedToNextStep();
+      // Step 2 shipping address → Step 3 shipping method
+      await checkoutPage.proceedToNextStep();
+      await checkoutPage.selectShippingMethod('Ground');
+      // Step 3 → Step 4 payment method
+      await checkoutPage.proceedToNextStep();
+      await checkoutPage.selectPaymentMethod('Credit Card');
+      // Step 4 → Step 5 payment info
+      await checkoutPage.proceedToNextStep();
+      // Step 5 → Step 6 confirm
+      await checkoutPage.proceedToNextStep();
+    });
+
+    await test.step('Confirm the order', async () => {
+      await checkoutPage.confirmOrder();
+    });
+
+    await test.step('Verify order was successfully placed', async () => {
+      const isConfirmed = await checkoutPage.isOrderConfirmed();
+      expect(isConfirmed).toBeTruthy();
+      const orderNumber = await checkoutPage.getOrderNumber();
+      expect(orderNumber).toBeTruthy();
+    });
+  });
+
   test('User can add multiple products to cart and remove one (#92)', async ({ page }) => {
     const mainPage = new MainPage(page);
     let productPage: ProductPage;
