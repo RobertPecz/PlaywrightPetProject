@@ -39,6 +39,9 @@ class CheckoutPage {
     // Shipping address selector (step 2 of OPC)
     shippingAddressSelect: () => this.page.locator('select[name="shipping_address_id"]'),
 
+    // Guest checkout button (shown when not logged in)
+    checkoutAsGuestButton: () => this.page.locator('input.checkout-as-guest-button, input[value="Checkout as Guest"]'),
+
     confirmOrderButton: () => this.page.locator('//input[@value="Confirm"]'),
 
     // Success message — nopCommerce confirmation page shows h1 "Thank you"
@@ -50,6 +53,14 @@ class CheckoutPage {
     nextButton: () =>
       this.page.locator('input[value="Continue"]:not([disabled]):visible, button:has-text("Continue"):visible').first(),
   };
+
+  async checkoutAsGuest() {
+    const btn = this.elements.checkoutAsGuestButton();
+    if (await btn.isVisible({ timeout: 5000 }).catch(() => false)) {
+      await btn.click();
+      await this.page.waitForLoadState('domcontentloaded');
+    }
+  }
 
   async fillBillingAddress({
     firstName,
