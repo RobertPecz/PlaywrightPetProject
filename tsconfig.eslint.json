@@ -3,7 +3,7 @@
   "compilerOptions": {
     // ...existing options...
     "module": "es2022",
-    "moduleResolution": "node",
+    "moduleResolution": "bundler",
     "target": "es2022"
   },
   "files": ["eslint.config.mts"],
