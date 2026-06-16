@@ -28,6 +28,10 @@ class ProductPage {
     quantityInput: () => this.page.locator("input[id*='EnteredQuantity']"),
     addToCartButton: () => this.page.locator("//input[contains(@id, 'add-to-cart-button')]"),
 
+    // List view add-to-cart button (on category/listing page, scoped per item index)
+    addToCartFromListViewButton: (index: number = 0) =>
+      this.page.locator('input.product-box-add-to-cart-button').nth(index),
+
     // Success notification
     successMessage: () => this.page.locator('//p[@class="content"]'),
     closeSuccessButton: () => this.page.locator('//span[@class="close"]').first(),
@@ -81,6 +85,11 @@ class ProductPage {
   async addToCartWithQuantity(quantity: number) {
     await this.setQuantity(quantity);
     await this.addProductToCart();
+  }
+
+  async addToCartFromListView(index: number = 0) {
+    await this.elements.addToCartFromListViewButton(index).click();
+    await this.elements.successMessage().waitFor({ state: 'visible', timeout: 15000 });
   }
 
   async closeSuccessNotification() {
