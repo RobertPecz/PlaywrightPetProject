@@ -562,6 +562,45 @@ test.describe('Buy product tests', () => {
     });
   });
 
+  test('User can add product to cart from details view (#98)', async ({ page }) => {
+    const mainPage = new MainPage(page);
+    let productPage: ProductPage;
+    let cartPage: CartPage;
+
+    await test.step('User logs in to the application', async () => {
+      await mainPage.userLogIn(userEmail, userPassword);
+      await expect(mainPage.elements.loggedInUserLink(userEmail)).toBeVisible();
+    });
+
+    await test.step('Navigate to Books category', async () => {
+      productPage = new ProductPage(page);
+      await productPage.navigateToCategory('Books');
+      await expect(productPage.elements.productLink(0)).toBeVisible();
+    });
+
+    await test.step('Open product detail page by clicking the first product', async () => {
+      await productPage.selectProductByIndex(0);
+      await expect(productPage.elements.productTitle()).toBeVisible();
+    });
+
+    await test.step('Add product to cart from the product detail page', async () => {
+      await productPage.addProductToCart();
+    });
+
+    await test.step('Verify product was successfully added to cart', async () => {
+      await expect(productPage.elements.successMessage()).toContainText('added to your shopping cart');
+      await productPage.closeSuccessNotification();
+    });
+
+    await test.step('Navigate to cart and verify product is present', async () => {
+      cartPage = new CartPage(page);
+      await cartPage.openCart();
+      await expect(cartPage.elements.cartItems().first()).toBeVisible();
+      const itemCount = await cartPage.getCartItemsCount();
+      expect(itemCount).toBeGreaterThan(0);
+    });
+  });
+
   test('User can proceed through checkout without explicitly selecting shipping address when no default address exists (#99)', async ({
     page,
   }) => {
