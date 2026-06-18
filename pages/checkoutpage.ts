@@ -42,6 +42,19 @@ class CheckoutPage {
     // Guest checkout button (shown when not logged in)
     checkoutAsGuestButton: () => this.page.locator('input.checkout-as-guest-button, input[value="Checkout as Guest"]'),
 
+    // Address book management (/customer/addresses)
+    addressAddNewButton: () => this.page.getByRole('button', { name: 'Add new' }),
+    addressFirstNameInput: () => this.page.locator('#Address_FirstName'),
+    addressLastNameInput: () => this.page.locator('#Address_LastName'),
+    addressEmailInput: () => this.page.locator('#Address_Email'),
+    addressCountrySelect: () => this.page.locator('#Address_CountryId'),
+    addressStateSelect: () => this.page.locator('#Address_StateProvinceId'),
+    addressCityInput: () => this.page.locator('#Address_City'),
+    addressLine1Input: () => this.page.locator('#Address_Address1'),
+    addressZipInput: () => this.page.locator('#Address_ZipPostalCode'),
+    addressPhoneInput: () => this.page.locator('#Address_PhoneNumber'),
+    addressSaveButton: () => this.page.locator('input[value="Save"]'),
+
     confirmOrderButton: () => this.page.locator('//input[@value="Confirm"]'),
 
     // Success message — nopCommerce confirmation page shows h1 "Thank you"
@@ -53,6 +66,50 @@ class CheckoutPage {
     nextButton: () =>
       this.page.locator('input[value="Continue"]:not([disabled]):visible, button:has-text("Continue"):visible').first(),
   };
+
+  async addDefaultAddressToAccount({
+    firstName,
+    lastName,
+    email,
+    country,
+    state,
+    city,
+    address,
+    zipCode,
+    phone,
+  }: {
+    firstName: string;
+    lastName: string;
+    email: string;
+    country: string;
+    state?: string;
+    city: string;
+    address: string;
+    zipCode: string;
+    phone: string;
+  }) {
+    await this.page.goto('/customer/addresses');
+    await this.page.waitForLoadState('domcontentloaded');
+    await this.elements.addressAddNewButton().click();
+    await this.page.waitForLoadState('domcontentloaded');
+    await this.elements.addressFirstNameInput().fill(firstName);
+    await this.elements.addressLastNameInput().fill(lastName);
+    await this.elements.addressEmailInput().fill(email);
+    await this.elements.addressCountrySelect().selectOption({ label: country });
+    if (state) {
+      const stateSelect = this.elements.addressStateSelect();
+      const stateOptions = await stateSelect.locator('option').allTextContents();
+      if (stateOptions.includes(state)) {
+        await stateSelect.selectOption({ label: state });
+      }
+    }
+    await this.elements.addressCityInput().fill(city);
+    await this.elements.addressLine1Input().fill(address);
+    await this.elements.addressZipInput().fill(zipCode);
+    await this.elements.addressPhoneInput().fill(phone);
+    await this.elements.addressSaveButton().click();
+    await this.page.waitForLoadState('domcontentloaded');
+  }
 
   async checkoutAsGuest() {
     const btn = this.elements.checkoutAsGuestButton();

@@ -673,6 +673,81 @@ test.describe('Buy product tests', () => {
     });
   });
 
+  test('User can proceed through checkout with existing default shipping address (#100)', async ({ page }) => {
+    const mainPage = new MainPage(page);
+    let productPage: ProductPage;
+    let cartPage: CartPage;
+    let checkoutPage: CheckoutPage;
+
+    await test.step('User logs in to the application', async () => {
+      await mainPage.userLogIn(userEmail, userPassword);
+      await expect(mainPage.elements.loggedInUserLink(userEmail)).toBeVisible();
+    });
+
+    await test.step('Add a default address to the account before checking out', async () => {
+      checkoutPage = new CheckoutPage(page);
+      await checkoutPage.addDefaultAddressToAccount({
+        firstName: 'John',
+        lastName: 'Doe',
+        email: userEmail,
+        country: 'United States',
+        state: 'New York',
+        city: 'New York',
+        address: '123 Main Street',
+        zipCode: '10001',
+        phone: '+1 (212) 555-0100',
+      });
+    });
+
+    await test.step('Navigate to Books and add first product to cart', async () => {
+      productPage = new ProductPage(page);
+      await productPage.navigateToCategory('Books');
+      await expect(productPage.elements.productLink(0)).toBeVisible();
+      await productPage.selectProductByIndex(0);
+      await productPage.addToCartWithQuantity(1);
+    });
+
+    await test.step('Verify product was added to cart', async () => {
+      await expect(productPage.elements.successMessage()).toContainText('added to your shopping cart');
+      await productPage.closeSuccessNotification();
+    });
+
+    await test.step('Navigate to cart and proceed to checkout', async () => {
+      cartPage = new CartPage(page);
+      await cartPage.openCart();
+      await expect(cartPage.elements.cartItems().first()).toBeVisible();
+      await cartPage.proceedToCheckout();
+    });
+
+    await test.step('Verify billing step shows existing address pre-selected in dropdown', async () => {
+      await expect(checkoutPage.elements.billingAddressSelect()).toBeVisible();
+    });
+
+    await test.step('Proceed through checkout without explicitly selecting shipping address', async () => {
+      // Step 1: billing — existing address pre-selected in dropdown, just proceed
+      await checkoutPage.proceedToNextStep();
+      // Step 2: shipping — default address is auto-selected, proceed without explicit selection
+      await checkoutPage.proceedToNextStep();
+      await checkoutPage.selectShippingMethod('Ground');
+      await checkoutPage.proceedToNextStep();
+      await checkoutPage.selectPaymentMethod('Credit Card');
+      await checkoutPage.proceedToNextStep();
+      // Step 5: payment info — continue to confirm step
+      await checkoutPage.proceedToNextStep();
+    });
+
+    await test.step('Confirm the order', async () => {
+      await checkoutPage.confirmOrder();
+    });
+
+    await test.step('Verify order was successfully placed', async () => {
+      const isConfirmed = await checkoutPage.isOrderConfirmed();
+      expect(isConfirmed).toBeTruthy();
+      const orderNumber = await checkoutPage.getOrderNumber();
+      expect(orderNumber).toBeTruthy();
+    });
+  });
+
   test('User can add multiple products to cart and remove one (#92)', async ({ page }) => {
     const mainPage = new MainPage(page);
     let productPage: ProductPage;
