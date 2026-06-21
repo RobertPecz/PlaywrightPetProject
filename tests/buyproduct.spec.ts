@@ -906,4 +906,40 @@ test.describe('Buy product tests', () => {
       await expect(cartPage.elements.itemNameInCart(secondProductName)).not.toBeVisible();
     });
   });
+
+  test('User cannot proceed to checkout without accepting terms and conditions (#102)', async ({ page }) => {
+    const mainPage = new MainPage(page);
+    let productPage: ProductPage;
+    let cartPage: CartPage;
+
+    await test.step('User logs in to the application', async () => {
+      await mainPage.userLogIn(userEmail, userPassword);
+      await expect(mainPage.elements.loggedInUserLink(userEmail)).toBeVisible();
+    });
+
+    await test.step('Navigate to Books and add first product to cart', async () => {
+      productPage = new ProductPage(page);
+      await productPage.navigateToCategory('Books');
+      await expect(productPage.elements.productLink(0)).toBeVisible();
+      await productPage.selectProductByIndex(0);
+      await productPage.addToCartWithQuantity(1);
+    });
+
+    await test.step('Verify product was added to cart', async () => {
+      await expect(productPage.elements.successMessage()).toContainText('added to your shopping cart');
+      await productPage.closeSuccessNotification();
+    });
+
+    await test.step('Navigate to cart and attempt checkout without accepting terms', async () => {
+      cartPage = new CartPage(page);
+      await cartPage.openCart();
+      await expect(cartPage.elements.cartItems().first()).toBeVisible();
+      const alertMessage = await cartPage.attemptCheckoutWithoutTOS();
+      expect(alertMessage).toContain('terms of service');
+    });
+
+    await test.step('Verify user remains on cart page and has not proceeded to checkout', async () => {
+      await expect(page).toHaveURL(/\/cart/);
+    });
+  });
 });

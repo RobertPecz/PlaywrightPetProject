@@ -38,6 +38,10 @@ class CartPage {
 
     // tos checkbox
     tosCheckbox: () => this.page.locator('#termsofservice'),
+
+    // tos error modal (shown when checkout is attempted without accepting TOS)
+    tosErrorDialog: () => this.page.getByRole('dialog', { name: 'Terms of service' }),
+    tosErrorMessage: () => this.page.getByRole('dialog', { name: 'Terms of service' }).locator('p'),
   };
 
   async openCart() {
@@ -75,6 +79,12 @@ class CartPage {
     await this.elements.checkoutButton().click();
     await this.page.waitForURL(/checkout|onepagecheckout/, { timeout: 10000 }).catch(() => {});
     await this.page.waitForLoadState('domcontentloaded');
+  }
+
+  async attemptCheckoutWithoutTOS(): Promise<string> {
+    await this.elements.checkoutButton().click();
+    await this.elements.tosErrorDialog().waitFor({ state: 'visible', timeout: 5000 });
+    return await this.elements.tosErrorMessage().innerText();
   }
 
   async isCartEmpty(): Promise<boolean> {
