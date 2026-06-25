@@ -40,6 +40,7 @@ class CheckoutPage {
     shippingAddressSelect: () => this.page.locator('select[name="shipping_address_id"]'),
 
     // Billing address validation errors
+    billingFirstNameError: () => this.page.locator('[data-valmsg-for="BillingNewAddress.FirstName"]'),
     billingLastNameError: () => this.page.locator('[data-valmsg-for="BillingNewAddress.LastName"]'),
 
     // Guest checkout button (shown when not logged in)
