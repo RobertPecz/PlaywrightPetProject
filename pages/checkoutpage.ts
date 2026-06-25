@@ -39,6 +39,9 @@ class CheckoutPage {
     // Shipping address selector (step 2 of OPC)
     shippingAddressSelect: () => this.page.locator('select[name="shipping_address_id"]'),
 
+    // Billing address validation errors
+    billingLastNameError: () => this.page.locator('[data-valmsg-for="BillingNewAddress.LastName"]'),
+
     // Guest checkout button (shown when not logged in)
     checkoutAsGuestButton: () => this.page.locator('input.checkout-as-guest-button, input[value="Checkout as Guest"]'),
 
