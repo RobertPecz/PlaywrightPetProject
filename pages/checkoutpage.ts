@@ -43,6 +43,7 @@ class CheckoutPage {
     billingFirstNameError: () => this.page.locator('[data-valmsg-for="BillingNewAddress.FirstName"]'),
     billingLastNameError: () => this.page.locator('[data-valmsg-for="BillingNewAddress.LastName"]'),
     billingEmailError: () => this.page.locator('[data-valmsg-for="BillingNewAddress.Email"]'),
+    billingCountryError: () => this.page.locator('[data-valmsg-for="BillingNewAddress.CountryId"]'),
     billingCityError: () => this.page.locator('[data-valmsg-for="BillingNewAddress.City"]'),
 
     // Guest checkout button (shown when not logged in)
@@ -141,7 +142,7 @@ class CheckoutPage {
     lastName: string;
     email: string;
     company?: string;
-    country: string;
+    country?: string;
     state?: string;
     city: string;
     address: string;
@@ -164,14 +165,16 @@ class CheckoutPage {
       await this.elements.billingCompanyInput().fill(company);
     }
 
-    const countrySelect = this.elements.billingCountrySelect();
-    await countrySelect.selectOption({ label: country });
+    if (country) {
+      const countrySelect = this.elements.billingCountrySelect();
+      await countrySelect.selectOption({ label: country });
 
-    if (state) {
-      const stateSelect = this.elements.billingStateSelect();
-      const stateOptions = await stateSelect.locator('option').allTextContents();
-      if (stateOptions.includes(state)) {
-        await stateSelect.selectOption({ label: state });
+      if (state) {
+        const stateSelect = this.elements.billingStateSelect();
+        const stateOptions = await stateSelect.locator('option').allTextContents();
+        if (stateOptions.includes(state)) {
+          await stateSelect.selectOption({ label: state });
+        }
       }
     }
 

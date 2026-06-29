@@ -1114,6 +1114,62 @@ test.describe('Buy product tests', () => {
     });
   });
 
+  test('User cannot proceed to checkout with billing country not selected (#106)', async ({ page }) => {
+    const mainPage = new MainPage(page);
+    let productPage: ProductPage;
+    let cartPage: CartPage;
+    let checkoutPage: CheckoutPage;
+
+    await test.step('User logs in to the application', async () => {
+      await mainPage.userLogIn(userEmail, userPassword);
+      await expect(mainPage.elements.loggedInUserLink(userEmail)).toBeVisible();
+    });
+
+    await test.step('Navigate to Books and add first product to cart', async () => {
+      productPage = new ProductPage(page);
+      await productPage.navigateToCategory('Books');
+      await expect(productPage.elements.productLink(0)).toBeVisible();
+      await productPage.selectProductByIndex(0);
+      await productPage.addToCartWithQuantity(1);
+    });
+
+    await test.step('Verify product was added to cart', async () => {
+      await expect(productPage.elements.successMessage()).toContainText('added to your shopping cart');
+      await productPage.closeSuccessNotification();
+    });
+
+    await test.step('Navigate to cart and proceed to checkout', async () => {
+      cartPage = new CartPage(page);
+      await cartPage.openCart();
+      await expect(cartPage.elements.cartItems().first()).toBeVisible();
+      await cartPage.proceedToCheckout();
+    });
+
+    await test.step('Fill billing address with country intentionally left unselected', async () => {
+      checkoutPage = new CheckoutPage(page);
+      await expect(checkoutPage.elements.billingFirstNameInput()).toBeVisible();
+      await checkoutPage.fillBillingAddress({
+        firstName: 'John',
+        lastName: 'Doe',
+        email: userEmail,
+        city: 'New York',
+        address: '123 Main Street',
+        zipCode: '10001',
+        phone: '+1 (212) 555-0100',
+      });
+    });
+
+    await test.step('Attempt to proceed without country and verify error message appears', async () => {
+      await checkoutPage.elements.nextButton().click();
+      await expect(checkoutPage.elements.billingCountryError()).toBeVisible();
+      await expect(checkoutPage.elements.billingCountryError()).toContainText('Country is required');
+    });
+
+    await test.step('Verify user remains on billing step and cannot proceed', async () => {
+      await expect(checkoutPage.elements.billingFirstNameInput()).toBeVisible();
+    });
+  });
+
   test('User cannot proceed to checkout with billing email not filled (#105)', async ({ page }) => {
     const mainPage = new MainPage(page);
     let productPage: ProductPage;
