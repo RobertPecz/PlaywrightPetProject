@@ -6,7 +6,8 @@
     "strictNullChecks": true,
     "declaration": true,
     "composite": true,
-    "emitDeclarationOnly": true
+    "emitDeclarationOnly": true,
+    "types": ["node"]
   },
   "files": [],
   "references": [{ "path": "./tsconfig.eslint.json" }]
