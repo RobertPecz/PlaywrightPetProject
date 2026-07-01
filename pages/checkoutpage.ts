@@ -45,6 +45,7 @@ class CheckoutPage {
     billingEmailError: () => this.page.locator('[data-valmsg-for="BillingNewAddress.Email"]'),
     billingCountryError: () => this.page.locator('[data-valmsg-for="BillingNewAddress.CountryId"]'),
     billingCityError: () => this.page.locator('[data-valmsg-for="BillingNewAddress.City"]'),
+    billingAddress1Error: () => this.page.locator('[data-valmsg-for="BillingNewAddress.Address1"]'),
 
     // Guest checkout button (shown when not logged in)
     checkoutAsGuestButton: () => this.page.locator('input.checkout-as-guest-button, input[value="Checkout as Guest"]'),
