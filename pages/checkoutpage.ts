@@ -19,6 +19,7 @@ class CheckoutPage {
     billingStateSelect: () => this.page.locator('#BillingNewAddress_StateProvinceId'),
     billingCityInput: () => this.page.locator('#BillingNewAddress_City'),
     billingAddressInput: () => this.page.locator('#BillingNewAddress_Address1'),
+    billingAddress2Input: () => this.page.locator('#BillingNewAddress_Address2'),
     billingZipInput: () => this.page.locator('#BillingNewAddress_ZipPostalCode'),
     billingPhoneInput: () => this.page.locator('#BillingNewAddress_PhoneNumber'),
 
@@ -136,6 +137,7 @@ class CheckoutPage {
     state,
     city,
     address,
+    address2,
     zipCode,
     phone,
   }: {
@@ -147,6 +149,7 @@ class CheckoutPage {
     state?: string;
     city: string;
     address: string;
+    address2?: string;
     zipCode: string;
     phone: string;
   }) {
@@ -181,6 +184,11 @@ class CheckoutPage {
 
     await this.elements.billingCityInput().fill(city);
     await this.elements.billingAddressInput().fill(address);
+
+    if (address2) {
+      await this.elements.billingAddress2Input().fill(address2);
+    }
+
     await this.elements.billingZipInput().fill(zipCode);
     await this.elements.billingPhoneInput().fill(phone);
   }
