@@ -1478,4 +1478,87 @@ test.describe('Buy product tests', () => {
       await expect(checkoutPage.elements.billingFirstNameInput()).toBeVisible();
     });
   });
+
+  test('User can checkout with Cash On Delivery (COD) payment method and see matching additional fee on confirm order page (#114)', async ({
+    page,
+  }) => {
+    const mainPage = new MainPage(page);
+    let productPage: ProductPage;
+    let cartPage: CartPage;
+    let checkoutPage: CheckoutPage;
+    let codFee: string | null;
+
+    await test.step('User logs in to the application', async () => {
+      await mainPage.userLogIn(userEmail, userPassword);
+      await expect(mainPage.elements.loggedInUserLink(userEmail)).toBeVisible();
+    });
+
+    await test.step('Navigate to Books and add first product to cart', async () => {
+      productPage = new ProductPage(page);
+      await productPage.navigateToCategory('Books');
+      await expect(productPage.elements.productLink(0)).toBeVisible();
+      await productPage.selectProductByIndex(0);
+      await productPage.addToCartWithQuantity(1);
+    });
+
+    await test.step('Verify product was added to cart', async () => {
+      await expect(productPage.elements.successMessage()).toContainText('added to your shopping cart');
+      await productPage.closeSuccessNotification();
+    });
+
+    await test.step('Navigate to cart and proceed to checkout', async () => {
+      cartPage = new CartPage(page);
+      await cartPage.openCart();
+      await expect(cartPage.elements.cartItems().first()).toBeVisible();
+      await cartPage.proceedToCheckout();
+    });
+
+    await test.step('Fill billing address and proceed through shipping steps', async () => {
+      checkoutPage = new CheckoutPage(page);
+      await checkoutPage.fillBillingAddress({
+        firstName: 'John',
+        lastName: 'Doe',
+        email: userEmail,
+        country: 'United States',
+        city: 'New York',
+        address: '123 Main Street',
+        zipCode: '10001',
+        phone: '+1 (212) 555-0100',
+      });
+      await checkoutPage.proceedToNextStep();
+      await checkoutPage.selectShippingAddressByName('John Doe');
+      await checkoutPage.proceedToNextStep();
+      await checkoutPage.selectShippingMethod('Ground');
+      await checkoutPage.proceedToNextStep();
+    });
+
+    await test.step('Select Cash On Delivery (COD) payment method and capture its listed fee', async () => {
+      await expect(checkoutPage.elements.paymentMethodOption('Cash On Delivery')).toBeVisible();
+      codFee = await checkoutPage.getPaymentMethodFee('Cash On Delivery');
+      expect(codFee).toBeTruthy();
+      await checkoutPage.selectPaymentMethod('Cash On Delivery');
+      await checkoutPage.proceedToNextStep();
+    });
+
+    await test.step('Verify payment information step shows the COD notice', async () => {
+      await expect(checkoutPage.elements.paymentInfoSection()).toContainText('You will pay by COD');
+      await checkoutPage.proceedToNextStep();
+    });
+
+    await test.step('Verify confirm order page shows the payment method additional fee matching the selected COD fee', async () => {
+      const confirmFee = await checkoutPage.getPaymentMethodAdditionalFee();
+      expect(confirmFee).toBe(codFee);
+    });
+
+    await test.step('Confirm the order', async () => {
+      await checkoutPage.confirmOrder();
+    });
+
+    await test.step('Verify order was successfully placed', async () => {
+      const isConfirmed = await checkoutPage.isOrderConfirmed();
+      expect(isConfirmed).toBeTruthy();
+      const orderNumber = await checkoutPage.getOrderNumber();
+      expect(orderNumber).toBeTruthy();
+    });
+  });
 });
