@@ -1561,4 +1561,89 @@ test.describe('Buy product tests', () => {
       expect(orderNumber).toBeTruthy();
     });
   });
+
+  test('User cannot see the provided address on the shipping address page when In-Store Pickup is selected (#113)', async ({
+    page,
+  }) => {
+    const mainPage = new MainPage(page);
+    let productPage: ProductPage;
+    let cartPage: CartPage;
+    let checkoutPage: CheckoutPage;
+
+    await test.step('User logs in to the application', async () => {
+      await mainPage.userLogIn(userEmail, userPassword);
+      await expect(mainPage.elements.loggedInUserLink(userEmail)).toBeVisible();
+    });
+
+    await test.step('Navigate to Books and add first product to cart', async () => {
+      productPage = new ProductPage(page);
+      await productPage.navigateToCategory('Books');
+      await expect(productPage.elements.productLink(0)).toBeVisible();
+      await productPage.selectProductByIndex(0);
+      await productPage.addToCartWithQuantity(1);
+    });
+
+    await test.step('Verify product was added to cart', async () => {
+      await expect(productPage.elements.successMessage()).toContainText('added to your shopping cart');
+      await productPage.closeSuccessNotification();
+    });
+
+    await test.step('Navigate to cart and proceed to checkout', async () => {
+      cartPage = new CartPage(page);
+      await cartPage.openCart();
+      await expect(cartPage.elements.cartItems().first()).toBeVisible();
+      await cartPage.proceedToCheckout();
+    });
+
+    await test.step('Fill billing address with a distinct, identifiable address', async () => {
+      checkoutPage = new CheckoutPage(page);
+      await expect(checkoutPage.elements.billingFirstNameInput()).toBeVisible();
+      await checkoutPage.fillBillingAddress({
+        firstName: 'John',
+        lastName: 'Doe',
+        email: userEmail,
+        country: 'United States',
+        city: 'New York',
+        address: '123 Main Street',
+        zipCode: '10001',
+        phone: '+1 (212) 555-0100',
+      });
+    });
+
+    await test.step('Proceed to shipping step', async () => {
+      await checkoutPage.proceedToNextStep();
+    });
+
+    await test.step('Verify the provided address is visible on the shipping address page before selecting In-Store Pickup', async () => {
+      await expect(checkoutPage.elements.shippingAddressSelect()).toBeVisible();
+    });
+
+    await test.step('Select In-Store Pickup', async () => {
+      await checkoutPage.selectPickUpInStore();
+    });
+
+    await test.step('Verify the provided address is no longer visible on the shipping address page', async () => {
+      await expect(checkoutPage.elements.shippingAddressSelect()).toBeHidden();
+    });
+
+    await test.step('Proceed through remaining checkout steps', async () => {
+      await checkoutPage.proceedToNextStep();
+      // Shipping method step has no options when In-Store Pickup is selected
+      await checkoutPage.proceedToNextStep();
+      await checkoutPage.selectPaymentMethod('Credit Card');
+      await checkoutPage.proceedToNextStep();
+      await checkoutPage.proceedToNextStep();
+    });
+
+    await test.step('Confirm the order', async () => {
+      await checkoutPage.confirmOrder();
+    });
+
+    await test.step('Verify order was successfully placed', async () => {
+      const isConfirmed = await checkoutPage.isOrderConfirmed();
+      expect(isConfirmed).toBeTruthy();
+      const orderNumber = await checkoutPage.getOrderNumber();
+      expect(orderNumber).toBeTruthy();
+    });
+  });
 });

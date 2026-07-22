@@ -1,4 +1,4 @@
-import { Page } from '@playwright/test';
+import { Page, expect } from '@playwright/test';
 
 class CheckoutPage {
   readonly page: Page;
@@ -43,6 +43,9 @@ class CheckoutPage {
 
     // Shipping address selector (step 2 of OPC)
     shippingAddressSelect: () => this.page.locator('select[name="shipping_address_id"]'),
+
+    // In-Store Pickup checkbox (step 2 of OPC) — checking it hides the address selector/form
+    pickUpInStoreCheckbox: () => this.page.locator('#PickUpInStore'),
 
     // Billing address validation errors
     billingFirstNameError: () => this.page.locator('[data-valmsg-for="BillingNewAddress.FirstName"]'),
@@ -256,6 +259,12 @@ class CheckoutPage {
         await this.page.waitForTimeout(500);
       }
     }
+  }
+
+  async selectPickUpInStore() {
+    const checkbox = this.elements.pickUpInStoreCheckbox();
+    await checkbox.click();
+    await expect(checkbox).toBeChecked({ timeout: 10000 });
   }
 
   async confirmOrder() {
