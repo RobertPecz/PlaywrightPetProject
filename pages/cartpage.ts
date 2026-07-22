@@ -1,4 +1,4 @@
-import { Page } from '@playwright/test';
+import { Page, expect } from '@playwright/test';
 
 class CartPage {
   readonly page: Page;
@@ -74,8 +74,12 @@ class CartPage {
   }
 
   async proceedToCheckout() {
-    // Accept Terms of Service if required before checkout
-    await this.elements.tosCheckbox().check();
+    // Accept Terms of Service if required before checkout.
+    // .check() throws immediately if the checked state hasn't flipped by the time it
+    // verifies, which races on WebKit; click() + a retrying assertion tolerates that delay.
+    const tosCheckbox = this.elements.tosCheckbox();
+    await tosCheckbox.click();
+    await expect(tosCheckbox).toBeChecked({ timeout: 10000 });
     await this.elements.checkoutButton().click();
     await this.page.waitForURL(/checkout|onepagecheckout/, { timeout: 10000 }).catch(() => {});
     await this.page.waitForLoadState('domcontentloaded');

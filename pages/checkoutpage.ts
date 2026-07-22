@@ -31,11 +31,15 @@ class CheckoutPage {
 
     // Payment method
     paymentMethodOption: (methodName: string) => this.page.locator(`//label[contains(., "${methodName}")]`),
-    paymentInfoSection: () => this.page.locator('//div[@class="payment-info"]'),
+    paymentInfoSection: () => this.page.locator('//div[contains(@class, "payment-info")]'),
 
     // Order summary
     orderSummary: () => this.page.locator('//div[@class="order-summary"]'),
     orderTotal: () => this.page.locator('//span[@class="product-price"]'),
+
+    // Confirm order page — payment method additional fee row (e.g. shown for COD)
+    paymentMethodAdditionalFeeRow: () =>
+      this.page.locator('//tr[td//span[contains(text(), "Payment method additional fee")]]'),
 
     // Shipping address selector (step 2 of OPC)
     shippingAddressSelect: () => this.page.locator('select[name="shipping_address_id"]'),
@@ -206,6 +210,24 @@ class CheckoutPage {
     if (await paymentOption.isVisible()) {
       await paymentOption.click();
     }
+  }
+
+  // Payment method labels end with the fee in parentheses, e.g. "Cash On Delivery (COD) (7.00)"
+  async getPaymentMethodFee(methodName: string): Promise<string | null> {
+    const labelText = await this.elements.paymentMethodOption(methodName).innerText();
+    const match = labelText.match(/\(([\d.]+)\)\s*$/);
+    return match ? match[1] : null;
+  }
+
+  async getPaymentMethodAdditionalFee(): Promise<string | null> {
+    const row = this.elements.paymentMethodAdditionalFeeRow();
+    const found = await row
+      .waitFor({ state: 'visible', timeout: 10000 })
+      .then(() => true)
+      .catch(() => false);
+    if (!found) return null;
+    const priceText = await row.locator('.product-price').innerText();
+    return priceText.trim();
   }
 
   async proceedToNextStep() {
