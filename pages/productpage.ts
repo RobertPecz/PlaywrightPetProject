@@ -29,6 +29,7 @@ class ProductPage {
     addToCartButton: () => this.page.locator("//input[contains(@id, 'add-to-cart-button')]"),
     availabilityLabel: () => this.page.locator('.stock .value'),
     emailAFriendButton: () => this.page.locator('.email-a-friend-button'),
+    addToCompareButton: () => this.page.locator('.add-to-compare-list-button'),
 
     // List view add-to-cart button (on category/listing page, scoped per item index)
     addToCartFromListViewButton: (index: number = 0) =>
@@ -103,6 +104,11 @@ class ProductPage {
 
   async clickEmailAFriend() {
     await this.elements.emailAFriendButton().click();
+    await this.page.waitForLoadState('domcontentloaded');
+  }
+
+  async clickAddToCompare() {
+    await this.elements.addToCompareButton().click();
     await this.page.waitForLoadState('domcontentloaded');
   }
 }
