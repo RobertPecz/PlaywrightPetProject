@@ -27,6 +27,7 @@ class ProductPage {
     productPrice: () => this.page.locator('.actual-price').first(),
     quantityInput: () => this.page.locator("input[id*='EnteredQuantity']"),
     addToCartButton: () => this.page.locator("//input[contains(@id, 'add-to-cart-button')]"),
+    availabilityLabel: () => this.page.locator('.stock .value'),
 
     // List view add-to-cart button (on category/listing page, scoped per item index)
     addToCartFromListViewButton: (index: number = 0) =>

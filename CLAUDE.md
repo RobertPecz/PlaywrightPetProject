@@ -16,10 +16,9 @@ Playwright E2E test suite for the **Tricentis Demo Web Shop** (`https://demowebs
 - **Owner/repo**: `RobertPecz/PlaywrightPetProject`, **main branch**: `master`
 - **Branch naming convention**: `<issue-number>-<kebab-case-title>` (e.g. `88-buy-one-product-and-checkout`)
   — the slash commands say `add_tests_<id>`; that is outdated, use the pattern above
-- **GitHub PAT**: stored in `pat.txt` — **read-only scope, never commit this file**
-  - Cannot push branches or create PRs via API/MCP tools with this token
-  - Workaround: ask the user to run `git push` manually, then open a PR at:
-    `https://github.com/RobertPecz/PlaywrightPetProject/compare/master...<branch>`
+- **GitHub PAT**: stored in `pat.txt` — **has `repo` scope (full read/write), never commit this file**
+  - Can push branches and create PRs directly via the REST API (`git push` with the PAT embedded in the HTTPS URL, then `POST /repos/.../pulls`) — no manual user action needed
+  - Verify scopes anytime with: `curl -sI -H "Authorization: token $(cat pat.txt)" https://api.github.com/repos/RobertPecz/PlaywrightPetProject | grep -i x-oauth-scopes`
 
 ---
 
@@ -142,7 +141,7 @@ The `.claude/commands/` folder contains an orchestrator workflow invoked with `/
 3. `/generate-page-objects` — creates/updates `pages/*.ts`
 4. `/generate-specs` — creates `tests/*.spec.ts`
 5. `/validate-tests` — runs `npx playwright test`, iterates until passing
-6. `/create-pr` — commits, pushes (user must do this manually), creates PR
+6. `/create-pr` — commits, pushes, and creates the PR automatically (PAT has `repo` scope)
 
 ---
 
