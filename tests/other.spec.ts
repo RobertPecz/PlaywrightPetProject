@@ -3,6 +3,7 @@ import CompareProductsPage from '../pages/compareproductspage';
 import EmailAFriendPage from '../pages/emailafriendpage';
 import { test, expect } from '@playwright/test';
 import ProductPage from '../pages/productpage';
+import CartPage from '../pages/cartpage';
 
 test.describe('Other tests', () => {
   // Fresh credentials per worker run — avoids shared account state in parallel browsers
@@ -114,6 +115,48 @@ test.describe('Other tests', () => {
       for (const price of prices) {
         expect(price).toMatch(/\d+\.\d{2}/);
       }
+    });
+  });
+
+  test('User cannot apply an invalid coupon code at checkout (#163)', async ({ page }) => {
+    const productPage = new ProductPage(page);
+    const cartPage = new CartPage(page);
+    let totalBeforeCoupon: string;
+
+    // Arrange: Add a product to the cart
+    await test.step('Navigate to Books and add the first product to the cart', async () => {
+      await productPage.navigateToCategory('Books');
+      await expect(productPage.elements.productLink(0)).toBeVisible();
+      await productPage.selectProductByIndex(0);
+      await productPage.addToCartWithQuantity(1);
+    });
+
+    await test.step('Verify product was added to cart', async () => {
+      await expect(productPage.elements.successMessage()).toContainText('added to your shopping cart');
+      await productPage.closeSuccessNotification();
+    });
+
+    // Act: Capture the order total, then attempt an invalid coupon code
+    await test.step('Navigate to cart and capture the total before applying the coupon', async () => {
+      await cartPage.openCart();
+      await expect(cartPage.elements.cartItems().first()).toBeVisible();
+      totalBeforeCoupon = await cartPage.getTotalAmount();
+    });
+
+    await test.step('Apply an invalid coupon code', async () => {
+      await cartPage.applyCoupon('INVALIDCOUPON' + Date.now());
+    });
+
+    // Assert: The coupon is rejected and the order total is unaffected
+    await test.step('Verify the invalid coupon is rejected with an error message', async () => {
+      await expect(cartPage.elements.couponMessage()).toHaveText(
+        "The coupon code you entered couldn't be applied to your order",
+      );
+    });
+
+    await test.step('Verify the order total was not reduced by the rejected coupon', async () => {
+      const totalAfterCoupon = await cartPage.getTotalAmount();
+      expect(totalAfterCoupon).toBe(totalBeforeCoupon);
     });
   });
 });
