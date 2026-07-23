@@ -1,4 +1,5 @@
 import { generateRandomEmail } from '../support/stringOperations';
+import CompareProductsPage from '../pages/compareproductspage';
 import EmailAFriendPage from '../pages/emailafriendpage';
 import { test, expect } from '@playwright/test';
 import ProductPage from '../pages/productpage';
@@ -66,6 +67,53 @@ test.describe('Other tests', () => {
     // Assert: Confirmation that the email was sent
     await test.step('Verify confirmation message that the email was sent', async () => {
       await expect(emailAFriendPage.elements.resultMessage()).toHaveText('Your message has been sent.');
+    });
+  });
+
+  test('User can add multiple products to the compare list (#145)', async ({ page }) => {
+    const productPage = new ProductPage(page);
+    const compareProductsPage = new CompareProductsPage(page);
+    let firstProductName: string;
+    let secondProductName: string;
+
+    // Arrange & Act: Add the first product to the compare list
+    await test.step('Navigate to Books and add the first product to the compare list', async () => {
+      await productPage.navigateToCategory('Books');
+      await expect(productPage.elements.productLink(0)).toBeVisible();
+      await productPage.selectProductByIndex(0);
+      firstProductName = (await productPage.elements.productTitle().innerText()).trim();
+      await productPage.clickAddToCompare();
+    });
+
+    // Assert: The first product is on the compare page
+    await test.step('Verify the first product appears on the compare products page', async () => {
+      await expect(page).toHaveURL(/compareproducts/);
+      const names = await compareProductsPage.getComparedProductNames();
+      expect(names).toContain(firstProductName);
+    });
+
+    // Act: Add a second, different product to the compare list
+    await test.step('Navigate to Computers and add a second product to the compare list', async () => {
+      await productPage.navigateToCategory('Computers');
+      await expect(productPage.elements.productLink(0)).toBeVisible();
+      await productPage.selectProductByIndex(0);
+      secondProductName = (await productPage.elements.productTitle().innerText()).trim();
+      await productPage.clickAddToCompare();
+    });
+
+    // Assert: Both products are listed side by side with their prices
+    await test.step('Verify both products are listed for comparison with their prices', async () => {
+      await expect(page).toHaveURL(/compareproducts/);
+
+      const names = await compareProductsPage.getComparedProductNames();
+      expect(names).toContain(firstProductName);
+      expect(names).toContain(secondProductName);
+
+      const prices = await compareProductsPage.getComparedProductPrices();
+      expect(prices).toHaveLength(names.length);
+      for (const price of prices) {
+        expect(price).toMatch(/\d+\.\d{2}/);
+      }
     });
   });
 });
