@@ -42,6 +42,11 @@ class CartPage {
     // tos error modal (shown when checkout is attempted without accepting TOS)
     tosErrorDialog: () => this.page.getByRole('dialog', { name: 'Terms of service' }),
     tosErrorMessage: () => this.page.getByRole('dialog', { name: 'Terms of service' }).locator('p'),
+
+    // Discount coupon
+    couponCodeInput: () => this.page.locator('input[name="discountcouponcode"]'),
+    applyCouponButton: () => this.page.locator('input[name="applydiscountcouponcode"]'),
+    couponMessage: () => this.page.locator('.coupon-box .message'),
   };
 
   async openCart() {
@@ -133,6 +138,12 @@ class CartPage {
 
   async continueShopping() {
     await this.elements.continueShopping().click();
+  }
+
+  async applyCoupon(code: string) {
+    await this.elements.couponCodeInput().fill(code);
+    await this.elements.applyCouponButton().click();
+    await this.page.waitForLoadState('domcontentloaded');
   }
 }
 
