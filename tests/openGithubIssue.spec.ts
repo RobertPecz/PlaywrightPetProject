@@ -33,10 +33,17 @@ test.describe('GitHub API tests', () => {
     if (!Array.isArray(parsed)) throw new Error('Unexpected GitHub response');
     const response = parsed as GithubIssue[];
 
+    // /issues?state=all also returns pull requests and unassigned items (e.g. Dependabot,
+    // or PRs created before an assignee is set), so the assignee check must find a matching
+    // issue rather than assume response[0] has one — see issue #181.
+    const assignedIssue = response.find((issue) =>
+      issue.assignees?.some((assignee) => assignee.login === githubApiData.assignee),
+    );
+
     expect(issues.status()).toBe(200);
     expect(response[0].url).toEqual(expect.stringContaining(githubApiData.baseEndpoint));
     expect(response[0].title).toBeTruthy();
-    expect(response[0].assignees?.[0].login).toEqual(githubApiData.assignee);
+    expect(assignedIssue?.assignees?.[0].login).toEqual(githubApiData.assignee);
   });
 
   [{ name: 'Login and register' }, { name: 'Buy product' }, { name: 'Other' }].forEach(({ name }) => {
