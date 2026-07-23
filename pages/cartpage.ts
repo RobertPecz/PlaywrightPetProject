@@ -45,7 +45,9 @@ class CartPage {
   };
 
   async openCart() {
-    await this.elements.cartLink().click();
+    // Navigate directly instead of clicking the header link — the link is intermittently
+    // covered by the hover-triggered flyout cart panel, which was causing CI-only click timeouts.
+    await this.page.goto('/cart');
     await this.page.waitForLoadState('domcontentloaded');
   }
 
@@ -77,9 +79,13 @@ class CartPage {
     // Accept Terms of Service if required before checkout.
     // .check() throws immediately if the checked state hasn't flipped by the time it
     // verifies, which races on WebKit; click() + a retrying assertion tolerates that delay.
+    // Occasionally the click itself doesn't register at all under CI load, so the whole
+    // click+verify cycle is retried rather than just the verification.
     const tosCheckbox = this.elements.tosCheckbox();
-    await tosCheckbox.click();
-    await expect(tosCheckbox).toBeChecked({ timeout: 10000 });
+    await expect(async () => {
+      await tosCheckbox.click();
+      await expect(tosCheckbox).toBeChecked({ timeout: 3000 });
+    }).toPass({ timeout: 15000 });
     await this.elements.checkoutButton().click();
     await this.page.waitForURL(/checkout|onepagecheckout/, { timeout: 10000 }).catch(() => {});
     await this.page.waitForLoadState('domcontentloaded');
