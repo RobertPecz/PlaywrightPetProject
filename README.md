@@ -1,5 +1,9 @@
 # 🎯 Playwright testautomation project on [Tricentis Tosca webshop](https://demowebshop.tricentis.com/)
 
+## A R C H I V E
+
+This project archived and wont accept any new pull request. Archive date: 24.07.2026.
+
 ## ⚙️ Getting started
 
 Install nodejs >=18.0.0 and npm. Install the packages with npm -i. You can execute the test with `npm -i` in the project root folder.
